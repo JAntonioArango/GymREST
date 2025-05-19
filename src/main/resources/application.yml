@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: GymTaskHibernate
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/testApp}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:testAppUser}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE   # shows bound params
+    javax.management.remote: WARN
+  file:
+    name: logs/myapp.log
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %black(|) %highlight(%-4level) %black(|) %highlight(%-4.4t) %black(|) %cyan(%-35.35logger{25}) %black(|) %highlight(%m%n)"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
