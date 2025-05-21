@@ -25,10 +25,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TraineeService {
 
-  private final TraineeRepo traineeRepo;
-  private final CredentialGenerator creds;
-  private final TrainerRepo trainerRepo;
-  private final UserRepo userRepo;
+  private final TraineeRepo traineeRepo;  private final CredentialGenerator creds;
+  private final TrainerRepo trainerRepo;  private final UserRepo userRepo;
 
   public TraineeRegistrationDto register(CreateTraineeDto dto) {
 

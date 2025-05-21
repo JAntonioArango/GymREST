@@ -21,7 +21,8 @@ public class AuthenticationService {
         .orElseThrow(() -> ApiException.badCredentials());
   }
 
-  @Transactional public void changePassword(String username, String oldPassword, String newPassword) {
+  @Transactional
+  public void changePassword(String username, String oldPassword, String newPassword) {
 
     User user = validate(username, oldPassword);
     user.setPassword(newPassword);
