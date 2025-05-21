@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# 1) Run the Spotless linter & auto-formatter
+echo "⏳ Running mvn spotless:apply…"
+mvn -q spotless:apply
+
+# 2) If it changed anything, abort commit so you can review & re-stage
+if [[ -n $(git diff --name-only) ]]; then
+  echo
+  echo "🚨 Spotless reformatted files. Please review & stage the changes:"
+  git --no-pager diff --stat
+  echo "Then run 'git add' and re-commit."
+  exit 1
+fi
+
+exit 0

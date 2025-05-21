@@ -4,23 +4,23 @@ import com.epam.gymapp.api.dto.TraineeTrainingDto;
 import com.epam.gymapp.api.dto.TrainerTrainingDto;
 import com.epam.gymapp.api.dto.TrainingDto;
 import com.epam.gymapp.entities.Training;
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
-import java.util.List;
-
 public interface TrainingRepo extends JpaRepository<Training, Long> {
 
-    Page<Training> findByTraineeUserUsername(String traineeUsername, Pageable pageable);
+  Page<Training> findByTraineeUserUsername(String traineeUsername, Pageable pageable);
 
-    List<Training> findByTrainerUserUsername(String trainerUsername);
+  List<Training> findByTrainerUserUsername(String trainerUsername);
 
-    // Get trainee’s trainings with optional filters
-    @Query("""
+  // Get trainee’s trainings with optional filters
+  @Query(
+      """
            SELECT new com.epam.gymapp.api.dto.TrainingDto(
                      t.id,
                      t.trainee.user.username,
@@ -39,14 +39,16 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
              AND (COALESCE(:trainingType,'') = '' OR
                   t.trainingType.name = :trainingType)
            """)
-    List<TrainingDto> findTraineeTrainingsJPQL(String traineeUsername,
-                                               LocalDate fromDate,
-                                               LocalDate toDate,
-                                               String trainerName,
-                                               String trainingType);
+  List<TrainingDto> findTraineeTrainingsJPQL(
+      String traineeUsername,
+      LocalDate fromDate,
+      LocalDate toDate,
+      String trainerName,
+      String trainingType);
 
-    //Get trainer’s trainings with optional filters
-    @Query("""
+  // Get trainer’s trainings with optional filters
+  @Query(
+      """
            SELECT new com.epam.gymapp.api.dto.TrainingDto(
                      t.id,
                      t.trainee.user.username,
@@ -63,13 +65,11 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                   LOWER(CONCAT(t.trainee.user.firstName,' ',t.trainee.user.lastName))
                       LIKE LOWER(CONCAT('%', :traineeName, '%')))
            """)
-        List<TrainingDto> findTrainerTrainingsJPQL(String trainerUsername,
-                                               LocalDate fromDate,
-                                               LocalDate toDate,
-                                               String traineeName);
+  List<TrainingDto> findTrainerTrainingsJPQL(
+      String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName);
 
-
-    @Query("""
+  @Query(
+      """
    SELECT new com.epam.gymapp.api.dto.TraineeTrainingDto(
             t.trainingName,
             t.trainingDate,
@@ -85,16 +85,16 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
               LIKE LOWER(CONCAT('%', :trainerName, '%')))
       AND (:trainingType IS NULL OR t.trainingType.name = :trainingType)
 """)
-    Page<TraineeTrainingDto> findTraineeTrainingRows(
-            @Param("traineeUsername") String traineeUsername,
-            @Param("from")            LocalDate from,
-            @Param("to")              LocalDate to,
-            @Param("trainerName")     String trainerName,
-            @Param("trainingType")    String trainingType,
-            Pageable pageable);
+  Page<TraineeTrainingDto> findTraineeTrainingRows(
+      @Param("traineeUsername") String traineeUsername,
+      @Param("from") LocalDate from,
+      @Param("to") LocalDate to,
+      @Param("trainerName") String trainerName,
+      @Param("trainingType") String trainingType,
+      Pageable pageable);
 
-
-    @Query("""
+  @Query(
+      """
    SELECT new com.epam.gymapp.api.dto.TrainerTrainingDto(
             t.trainingName,
             t.trainingDate,
@@ -109,12 +109,10 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
            OR LOWER(CONCAT(t.trainee.user.firstName,' ',t.trainee.user.lastName))
               LIKE LOWER(CONCAT('%', :traineeName, '%')))
 """)
-    Page<TrainerTrainingDto> findTrainerTrainingRows(
-            @Param("trainerUsername") String trainerUsername,
-            @Param("from")            LocalDate from,
-            @Param("to")              LocalDate to,
-            @Param("traineeName")     String traineeName,
-            Pageable pageable);
-
-
+  Page<TrainerTrainingDto> findTrainerTrainingRows(
+      @Param("trainerUsername") String trainerUsername,
+      @Param("from") LocalDate from,
+      @Param("to") LocalDate to,
+      @Param("traineeName") String traineeName,
+      Pageable pageable);
 }

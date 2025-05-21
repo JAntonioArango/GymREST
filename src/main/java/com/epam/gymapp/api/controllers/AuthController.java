@@ -13,35 +13,28 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth")
 public class AuthController {
 
-    private final AuthenticationService authService;
+  private final AuthenticationService authService;
 
-    /* --------- LOGIN --------- */
-    @GetMapping("/login")
-    @Operation(summary = "Login (3)")
-    public ResponseEntity<Void> login(
-            @RequestParam String username,
-            @RequestParam String password) {
+  /* --------- LOGIN --------- */
+  @GetMapping("/login")
+  @Operation(summary = "Login (3)")
+  public ResponseEntity<Void> login(@RequestParam String username, @RequestParam String password) {
 
-        authService.validate(username, password);
+    authService.validate(username, password);
 
-        return ResponseEntity.ok().build();
-    }
+    return ResponseEntity.ok().build();
+  }
 
-    /* ----- CHANGE PASSWORD ----- */
-    @PutMapping("/change-password")
-    @Operation(summary = "Change Password (4)")
-    public ResponseEntity<Void> changePassword(
-            @RequestParam String username,
-            @RequestParam String oldPassword,
-            @RequestParam String newPassword) {
+  /* ----- CHANGE PASSWORD ----- */
+  @PutMapping("/change-password")
+  @Operation(summary = "Change Password (4)")
+  public ResponseEntity<Void> changePassword(
+      @RequestParam String username,
+      @RequestParam String oldPassword,
+      @RequestParam String newPassword) {
 
-        authService.changePassword(username, oldPassword, newPassword);
+    authService.changePassword(username, oldPassword, newPassword);
 
-        return ResponseEntity.ok().build();
-    }
-
-
-
-
-
+    return ResponseEntity.ok().build();
+  }
 }

@@ -16,29 +16,28 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final AuthenticationService authService;
+  private final AuthenticationService authService;
 
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticatedUser.class)
-                && User.class.isAssignableFrom(parameter.getParameterType());
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    return parameter.hasParameterAnnotation(AuthenticatedUser.class)
+        && User.class.isAssignableFrom(parameter.getParameterType());
+  }
+
+  @Override
+  public Object resolveArgument(
+      MethodParameter parameter,
+      ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest,
+      WebDataBinderFactory binderFactory) {
+
+    String username = webRequest.getParameter("username");
+    String password = webRequest.getParameter("password");
+
+    if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+      throw ApiException.badCredentials();
     }
 
-    @Override
-    public Object resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) {
-
-        String username = webRequest.getParameter("username");
-        String password = webRequest.getParameter("password");
-
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            throw ApiException.badCredentials();
-        }
-
-        return authService.validate(username, password);
-    }
-
-
+    return authService.validate(username, password);
+  }
 }

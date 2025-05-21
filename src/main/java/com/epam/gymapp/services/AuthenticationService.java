@@ -11,22 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepo repo;
 
-    @Transactional(readOnly = true)
-    public User validate(String username, String password) {
+  private final UserRepo repo;
 
-        return repo.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> ApiException.badCredentials());
-    }
+  @Transactional(readOnly = true)
+  public User validate(String username, String password) {
 
-    @Transactional
-    public void changePassword(String username,
-                               String oldPassword,
-                               String newPassword) {
+    return repo.findByUsernameAndPassword(username, password)
+        .orElseThrow(() -> ApiException.badCredentials());
+  }
 
-        User user = validate(username, oldPassword);
-        user.setPassword(newPassword);
-    }
+  @Transactional public void changePassword(String username, String oldPassword, String newPassword) {
 
+    User user = validate(username, oldPassword);
+    user.setPassword(newPassword);
+  }
 }

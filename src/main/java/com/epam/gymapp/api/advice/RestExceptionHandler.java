@@ -11,26 +11,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    ResponseEntity<ProblemDetail> notFound(EntityNotFoundException ex,
-                                           HttpServletRequest req) {
+  @ExceptionHandler(EntityNotFoundException.class)
+  ResponseEntity<ProblemDetail> notFound(EntityNotFoundException ex, HttpServletRequest req) {
 
-        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        pd.setTitle("Resource not found");
-        pd.setDetail(ex.getMessage());
-        pd.setProperty("path", req.getRequestURI());
+    ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    pd.setTitle("Resource not found");
+    pd.setDetail(ex.getMessage());
+    pd.setProperty("path", req.getRequestURI());
 
-        return ResponseEntity.status(pd.getStatus()).body(pd);
-    }
+    return ResponseEntity.status(pd.getStatus()).body(pd);
+  }
 
-    @ExceptionHandler(ApiException.class)
-    ResponseEntity<ProblemDetail> apiError(ApiException ex,
-                                           HttpServletRequest req) {
+  @ExceptionHandler(ApiException.class)
+  ResponseEntity<ProblemDetail> apiError(ApiException ex, HttpServletRequest req) {
 
-        ProblemDetail pd = ProblemDetail.forStatus(ex.getStatus());
-        pd.setTitle(ex.getStatus().getReasonPhrase());
-        pd.setDetail(ex.getMessage());
-        pd.setProperty("path", req.getRequestURI());
-        return ResponseEntity.status(ex.getStatus()).body(pd);
-    }
+    ProblemDetail pd = ProblemDetail.forStatus(ex.getStatus());
+    pd.setTitle(ex.getStatus().getReasonPhrase());
+    pd.setDetail(ex.getMessage());
+    pd.setProperty("path", req.getRequestURI());
+    return ResponseEntity.status(ex.getStatus()).body(pd);
+  }
 }

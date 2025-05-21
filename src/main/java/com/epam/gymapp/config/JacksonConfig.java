@@ -1,4 +1,3 @@
 package com.epam.gymapp.config;
 
-public class JacksonConfig {
-}
+public class JacksonConfig {}

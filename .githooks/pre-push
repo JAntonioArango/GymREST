@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# 1) Run your full Maven verify, which includes:
+#    - unit tests
+#    - JaCoCo coverage check
+#    - any static analyzers you’ve bound (Checkstyle/SpotBugs, etc.)
+echo "⏳ Running mvn clean verify…"
+mvn -q clean verify
+
+if [[ $? -ne 0 ]]; then
+  echo
+  echo "🚨 Maven verify failed. Fix the errors before pushing."
+  exit 1
+fi
+
+exit 0
