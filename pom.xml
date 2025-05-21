@@ -114,8 +114,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-
-            <!-- 1) Attach the agent before tests -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
