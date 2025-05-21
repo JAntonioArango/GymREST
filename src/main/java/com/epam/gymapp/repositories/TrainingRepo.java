@@ -1,21 +1,27 @@
 package com.epam.gymapp.repositories;
 
-import com.epam.gymapp.dto.TrainingDto;
+import com.epam.gymapp.api.dto.TraineeTrainingDto;
+import com.epam.gymapp.api.dto.TrainerTrainingDto;
+import com.epam.gymapp.api.dto.TrainingDto;
 import com.epam.gymapp.entities.Training;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface TrainingRepo extends JpaRepository<Training, Long> {
 
-    List<Training> findByTraineeUserUsername(String traineeUsername);
+    Page<Training> findByTraineeUserUsername(String traineeUsername, Pageable pageable);
+
     List<Training> findByTrainerUserUsername(String trainerUsername);
 
     // Get trainee’s trainings with optional filters
     @Query("""
-           SELECT new com.epam.gymapp.dto.TrainingDto(
+           SELECT new com.epam.gymapp.api.dto.TrainingDto(
                      t.id,
                      t.trainee.user.username,
                      t.trainer.user.username,
@@ -41,7 +47,7 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
 
     //Get trainer’s trainings with optional filters
     @Query("""
-           SELECT new com.epam.gymapp.dto.TrainingDto(
+           SELECT new com.epam.gymapp.api.dto.TrainingDto(
                      t.id,
                      t.trainee.user.username,
                      t.trainer.user.username,
@@ -57,8 +63,58 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                   LOWER(CONCAT(t.trainee.user.firstName,' ',t.trainee.user.lastName))
                       LIKE LOWER(CONCAT('%', :traineeName, '%')))
            """)
-    List<TrainingDto> findTrainerTrainingsJPQL(String trainerUsername,
+        List<TrainingDto> findTrainerTrainingsJPQL(String trainerUsername,
                                                LocalDate fromDate,
                                                LocalDate toDate,
                                                String traineeName);
+
+
+    @Query("""
+   SELECT new com.epam.gymapp.api.dto.TraineeTrainingDto(
+            t.trainingName,
+            t.trainingDate,
+            t.trainingType.name,
+            t.trainingDuration,
+            CONCAT(t.trainer.user.firstName,' ',t.trainer.user.lastName))
+     FROM Training t
+    WHERE t.trainee.user.username = :traineeUsername
+      AND (:from IS NULL OR t.trainingDate >= :from)
+      AND (:to   IS NULL OR t.trainingDate <= :to)
+      AND (:trainerName IS NULL
+           OR LOWER(CONCAT(t.trainer.user.firstName,' ',t.trainer.user.lastName))
+              LIKE LOWER(CONCAT('%', :trainerName, '%')))
+      AND (:trainingType IS NULL OR t.trainingType.name = :trainingType)
+""")
+    Page<TraineeTrainingDto> findTraineeTrainingRows(
+            @Param("traineeUsername") String traineeUsername,
+            @Param("from")            LocalDate from,
+            @Param("to")              LocalDate to,
+            @Param("trainerName")     String trainerName,
+            @Param("trainingType")    String trainingType,
+            Pageable pageable);
+
+
+    @Query("""
+   SELECT new com.epam.gymapp.api.dto.TrainerTrainingDto(
+            t.trainingName,
+            t.trainingDate,
+            t.trainingType.name,
+            t.trainingDuration,
+            CONCAT(t.trainee.user.firstName,' ',t.trainee.user.lastName))
+     FROM Training t
+    WHERE t.trainer.user.username = :trainerUsername
+      AND (:from IS NULL OR t.trainingDate >= :from)
+      AND (:to   IS NULL OR t.trainingDate <= :to)
+      AND (:traineeName IS NULL
+           OR LOWER(CONCAT(t.trainee.user.firstName,' ',t.trainee.user.lastName))
+              LIKE LOWER(CONCAT('%', :traineeName, '%')))
+""")
+    Page<TrainerTrainingDto> findTrainerTrainingRows(
+            @Param("trainerUsername") String trainerUsername,
+            @Param("from")            LocalDate from,
+            @Param("to")              LocalDate to,
+            @Param("traineeName")     String traineeName,
+            Pageable pageable);
+
+
 }

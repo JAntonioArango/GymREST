@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="LOG_LEVEL" defaultValue="INFO"
+                    source="logging.level.root"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <property name="PATTERN" value="%d{HH:mm:ss.SSS} %highlight(%-5level) [%X{txId:-NO-TX}] %logger{36} - %cyan(%msg) %n"/>
+
+        <encoder><pattern>${PATTERN}</pattern></encoder>
+    </appender>
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

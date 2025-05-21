@@ -1,22 +1,30 @@
 spring:
   application:
-    name: GymTaskHibernate
+    name: GymTaskREST
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/testApp}
+    url:      ${SPRING_DATASOURCE_URL:jdbc:mysql://db:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:gymuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:gympass}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME:testAppUser}
-    password: ${DB_PASSWORD}
+
+    # If MySQL comes up a few seconds late, don't fail-fast:
+    hikari:
+      initialization-fail-timeout: 0
+      connection-timeout: 30000
+
+
 
   jpa:
     hibernate:
-      ddl-auto: update
-
+      ddl-auto: validate
     open-in-view: false
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+    properties.hibernate.format_sql: true
+
+
+  output:
+    ansi:
+      enabled: ALWAYS
 
   jackson:
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
@@ -25,9 +33,12 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE   # shows bound params
-    javax.management.remote: WARN
+    com.epam.gymapp: DEBUG
+    org.hibernate.SQL: WARN
+    org.hibernate.type: WARN
+    javax.management.remote: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
   file:
     name: logs/myapp.log
   pattern:
