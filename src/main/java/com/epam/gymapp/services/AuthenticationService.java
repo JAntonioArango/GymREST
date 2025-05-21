@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-
   private final UserRepo repo;
 
   @Transactional(readOnly = true)
