@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RestExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
-  ResponseEntity<ProblemDetail> notFound(EntityNotFoundException ex, HttpServletRequest req) {
+  public ResponseEntity<ProblemDetail> notFound(
+      EntityNotFoundException ex, HttpServletRequest req) {
 
     ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
     pd.setTitle("Resource not found");
@@ -23,7 +24,7 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler(ApiException.class)
-  ResponseEntity<ProblemDetail> apiError(ApiException ex, HttpServletRequest req) {
+  public ResponseEntity<ProblemDetail> apiError(ApiException ex, HttpServletRequest req) {
 
     ProblemDetail pd = ProblemDetail.forStatus(ex.getStatus());
     pd.setTitle(ex.getStatus().getReasonPhrase());

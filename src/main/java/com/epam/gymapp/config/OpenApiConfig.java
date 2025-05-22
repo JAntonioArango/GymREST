@@ -15,8 +15,13 @@ public class OpenApiConfig {
         .info(
             new Info()
                 .title("Gym Task REST API - Juan Antonio Arango")
-                .description("CRUD operations for Trainers, Trainees and Trainings")
-                .version("1.3.0")
+                .description(
+                    """
+                  CRUD operations for Trainers, Trainees and Trainings.
+                  Provides login/password management and rich filtering \
+                  for both trainees and trainers.
+                  """)
+                .version("1.4.0")
                 .license(new License().name("Apache 2.0")))
         .addServersItem(new Server().url("http://localhost:8080"));
   }

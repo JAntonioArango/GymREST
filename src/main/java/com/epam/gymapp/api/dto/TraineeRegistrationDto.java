@@ -1,3 +1,7 @@
 package com.epam.gymapp.api.dto;
 
-public record TraineeRegistrationDto(String username, String password) {}
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record TraineeRegistrationDto(
+    @Schema(example = "Daniela.Lopez123") String username,
+    @Schema(example = "Pass123") String password) {}

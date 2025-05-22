@@ -8,15 +8,13 @@ import com.epam.gymapp.entities.User;
 import com.epam.gymapp.repositories.TraineeRepo;
 import com.epam.gymapp.repositories.TrainerRepo;
 import com.epam.gymapp.repositories.TrainingTypeRepo;
-import com.epam.gymapp.repositories.UserRepo;
+import com.epam.gymapp.repositories.UserRepository;
 import com.epam.gymapp.utils.CredentialGenerator;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,10 +28,7 @@ public class TrainerService {
   private final TrainingTypeRepo typeRepo;
   private final CredentialGenerator creds;
   private final TraineeRepo traineeRepo;
-  private final UserRepo userRepo;
-
-  // **** Keep???????????
-  private static final Logger logger = LoggerFactory.getLogger(TrainerService.class);
+  private final UserRepository userRepository;
 
   public TrainerRegistrationDto register(CreateTrainerDto dto) {
 
@@ -45,7 +40,7 @@ public class TrainerService {
     TrainerDto saved = createProfile(dto);
 
     User u =
-        userRepo
+        userRepository
             .findByUsername(saved.username())
             .orElseThrow(() -> ApiException.notFound("User", saved.username()));
 
@@ -99,17 +94,17 @@ public class TrainerService {
     return toProfileDto(trainer);
   }
 
-  private void checker(CreateTrainerDto dto, Trainer trainer) {
-    if (dto.specialization() != null
-        && !dto.specialization().equals(trainer.getSpecialization().getName())) {
-
-      TrainingType spec =
-          typeRepo
-              .findByName(dto.specialization())
-              .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization()));
-      trainer.setSpecialization(spec);
-    }
-  }
+  //  private void checker(CreateTrainerDto dto, Trainer trainer) {
+  //    if (dto.specialization() != null
+  //        && !dto.specialization().equals(trainer.getSpecialization().getName())) {
+  //
+  //      TrainingType spec =
+  //          typeRepo
+  //              .findByName(dto.specialization())
+  //              .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization()));
+  //      trainer.setSpecialization(spec);
+  //    }
+  //  }
 
   public void changePassword(String username, String currentPwd, String newPwd) {
 

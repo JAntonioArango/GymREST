@@ -2,7 +2,7 @@ package com.epam.gymapp.services;
 
 import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.entities.User;
-import com.epam.gymapp.repositories.UserRepo;
+import com.epam.gymapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-  private final UserRepo repo;
+  private final UserRepository repo;
 
   @Transactional(readOnly = true)
   public User validate(String username, String password) {

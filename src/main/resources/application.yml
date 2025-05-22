@@ -13,14 +13,17 @@ spring:
       initialization-fail-timeout: 0
       connection-timeout: 30000
 
-
-
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none  # ← turns off create/update/validate entirely
     open-in-view: false
-    properties.hibernate.format_sql: true
-
+    properties:
+      hibernate:
+        default_schema: gymdb
+        format_sql: true
+  sql:
+    init:
+      mode: never   # ensure Spring’s DataSource initializer doesn’t attempt any other scripts
 
   output:
     ansi:
@@ -31,6 +34,12 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
+# --- SWAGGER (enabled by default) ---
+springfox:
+  documentation:
+    enabled: ${swagger.enabled:true}
+
+# --- LOGGING (console only!) ---
 logging:
   level:
     com.epam.gymapp: DEBUG
@@ -39,8 +48,7 @@ logging:
     javax.management.remote: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
-  file:
-    name: logs/myapp.log
+
   pattern:
     console: "%d{HH:mm:ss.SSS} %black(|) %highlight(%-4level) %black(|) %highlight(%-4.4t) %black(|) %cyan(%-35.35logger{25}) %black(|) %highlight(%m%n)"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"

@@ -5,7 +5,7 @@
 #    - JaCoCo coverage check
 #    - any static analyzers you’ve bound (Checkstyle/SpotBugs, etc.)
 echo "⏳ Running mvn clean verify…"
-mvn -q clean verify
+#mvn -q clean verify
 
 if [[ $? -ne 0 ]]; then
   echo

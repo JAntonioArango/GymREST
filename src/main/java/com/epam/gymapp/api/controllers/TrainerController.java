@@ -4,13 +4,10 @@ import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainerService;
-import com.epam.gymapp.utils.ApiListWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,16 +38,16 @@ public class TrainerController {
     return trainerService.findProfile(username);
   }
 
-  @GetMapping
-  @Operation(summary = "List trainers - paged")
-  public ApiListWrapper<TrainerDto> list(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      @AuthenticatedUser User caller) {
-
-    Page<TrainerDto> p = trainerService.list(PageRequest.of(page, size));
-    return new ApiListWrapper<>(p.getContent()); // simple wrapper
-  }
+  //  @GetMapping
+  //  @Operation(summary = "List trainers - paged")
+  //  public ApiListWrapper<TrainerDto> list(
+  //      @RequestParam(defaultValue = "0") int page,
+  //      @RequestParam(defaultValue = "20") int size,
+  //      @AuthenticatedUser User caller) {
+  //
+  //    Page<TrainerDto> p = trainerService.list(PageRequest.of(page, size));
+  //    return new ApiListWrapper<>(p.getContent()); // simple wrapper
+  //  }
 
   /* ------ UPDATE (PUT) ------ */
   @PutMapping("/{username}")

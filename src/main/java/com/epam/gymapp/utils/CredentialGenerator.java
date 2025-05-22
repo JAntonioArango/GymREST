@@ -1,6 +1,6 @@
 package com.epam.gymapp.utils;
 
-import com.epam.gymapp.repositories.UserRepo;
+import com.epam.gymapp.repositories.UserRepository;
 import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CredentialGenerator {
 
-  private final UserRepo userRepo;
+  private final UserRepository userRepository;
 
-  public CredentialGenerator(UserRepo userRepo) {
-    this.userRepo = userRepo;
+  public CredentialGenerator(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   public String randomPassword() {
@@ -26,7 +26,7 @@ public class CredentialGenerator {
     do {
       String uuid8 = UUID.randomUUID().toString().substring(0, 8);
       candidate = base + "-" + uuid8;
-    } while (userRepo.existsByUsername(candidate));
+    } while (userRepository.existsByUsername(candidate));
 
     return candidate;
   }

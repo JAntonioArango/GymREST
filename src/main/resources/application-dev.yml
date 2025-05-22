@@ -1,0 +1,8 @@
+spring:
+  profiles: dev
+
+logging:
+  file:
+    name: logs/myapp.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"

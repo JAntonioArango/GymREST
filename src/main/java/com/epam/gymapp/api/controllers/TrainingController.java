@@ -87,41 +87,10 @@ public class TrainingController {
   }
 
   /* ------ HELPERS ------ */
-
-  private static TrainingService.TrainingFilter getTrainingFilter(
-      LocalDate from, LocalDate to, String trainerName, String trainingType) {
-    TrainingService.TrainingFilter filter =
-        (from == null && to == null && blank(trainerName) && blank(trainingType))
-            ? null
-            : new TrainingService.TrainingFilter(from, to, trainerName, null, trainingType);
-    return filter;
-  }
-
-  private static boolean blank(String s) {
-    return s == null || s.isBlank();
-  }
-
-  private static List<TrainingDto> paginate(List<TrainingDto> src, int page, int size) {
-    int from = Math.max(0, page * size);
-    int to = Math.min(src.size(), from + size);
-    return (from >= to) ? List.of() : src.subList(from, to);
-  }
-
-  private static boolean filterMatch(TrainingDto t, TrainingService.TrainingFilter f) {
-
-    boolean dateOk = isDateOk(t, f);
-
-    boolean traineeOk =
-        f.traineeNameOrNull() == null
-            || t.traineeUsername().toLowerCase().contains(f.traineeNameOrNull().toLowerCase());
-
-    return dateOk && traineeOk;
-  }
-
-  private static boolean isDateOk(TrainingDto t, TrainingService.TrainingFilter f) {
-    boolean dateOk =
-        (f.fromDate() == null || !t.trainingDate().isBefore(f.fromDate()))
-            && (f.toDate() == null || !t.trainingDate().isAfter(f.toDate()));
-    return dateOk;
-  }
+  //  private static boolean isDateOk(TrainingDto t, TrainingService.TrainingFilter f) {
+  //    boolean dateOk =
+  //        (f.fromDate() == null || !t.trainingDate().isBefore(f.fromDate()))
+  //            && (f.toDate() == null || !t.trainingDate().isAfter(f.toDate()));
+  //    return dateOk;
+  //  }
 }

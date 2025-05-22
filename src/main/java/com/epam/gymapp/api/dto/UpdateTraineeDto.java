@@ -1,12 +1,13 @@
 package com.epam.gymapp.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record UpdateTraineeDto(
-    @NotBlank String firstName,
-    @NotBlank String lastName,
-    LocalDate dateOfBirth,
-    String address,
-    @NotNull Boolean isActive) {}
+    @Schema(example = "Sara") @NotBlank String firstName,
+    @Schema(example = "Maria") @NotBlank String lastName,
+    @Schema(example = "2025-05-02") LocalDate dateOfBirth,
+    @Schema(example = "123 Main St") String address,
+    @Schema(example = "true") @NotNull Boolean isActive) {}

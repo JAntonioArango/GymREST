@@ -102,11 +102,11 @@ public class TrainingService {
   }
 
   // Get trainer’s trainings by optional filters (date range, trainee name)
-  public List<TrainingDto> listByTrainer(
-      String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
-    return trainingRepo.findTrainerTrainingsJPQL(
-        trainerUsername, fromDate, toDate, blankToNull(traineeName));
-  }
+  //  public List<TrainingDto> listByTrainer(
+  //      String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
+  //    return trainingRepo.findTrainerTrainingsJPQL(
+  //        trainerUsername, fromDate, toDate, blankToNull(traineeName));
+  //  }
 
   private static String blankToNull(String s) {
     return (s == null || s.isBlank()) ? null : s;

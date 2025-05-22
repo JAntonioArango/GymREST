@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 #
-# 1) Run the Spotless linter & auto-formatter
 echo "⏳ Running mvn spotless:apply…"
 mvn -q spotless:apply
 
-# 2) If it changed anything, abort commit so you can review & re-stage
-if [[ -n $(git diff --name-only) ]]; then
-  echo
-  echo "🚨 Spotless reformatted files. Please review & stage the changes:"
-  git --no-pager diff --stat
-  echo "Then run 'git add' and re-commit."
+[[ -n $(git diff --name-only) ]] && { echo "Reformatted—please stage & commit."; exit 1; }
+
+
+echo "⏳ Running Maven verify + SonarQube scan…"
+
+mvn -q clean verify sonar:sonar \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=$SONAR_TOKEN
+
+if [[ $? -ne 0 ]]; then
+  echo "❌ Build or Sonar scan failed—fix before pushing."
   exit 1
 fi
 

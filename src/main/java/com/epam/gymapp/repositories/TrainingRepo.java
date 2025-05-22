@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface TrainingRepo extends JpaRepository<Training, Long> {
 
   Page<Training> findByTraineeUserUsername(String traineeUsername, Pageable pageable);
@@ -25,6 +27,8 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                      t.id,
                      t.trainee.user.username,
                      t.trainer.user.username,
+                     t.trainer.user.firstName,
+                     t.trainer.user.lastName,
                      t.trainingType.name,
                      t.trainingName,
                      t.trainingDate,
@@ -53,6 +57,8 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                      t.id,
                      t.trainee.user.username,
                      t.trainer.user.username,
+                     t.trainer.user.firstName,
+                     t.trainer.user.lastName,
                      t.trainingType.name,
                      t.trainingName,
                      t.trainingDate,

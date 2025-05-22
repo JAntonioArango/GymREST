@@ -23,9 +23,10 @@ public class TransactionIdFilter extends OncePerRequestFilter {
   private static final String MDC_KEY = "txId";
 
   @Override
-  protected void doFilterInternal(
+  public void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
+
     // 1. Generate or extract incoming Tx-ID
     String txId =
         Optional.ofNullable(request.getHeader(HEADER))
