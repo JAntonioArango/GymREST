@@ -50,12 +50,8 @@ The **Gym Task** project is a robust Spring Boot + Hibernate REST API applicatio
 
 
 
-
-
 <style>
   h1 { color: rgba(0,178,255,0.9); }
   h2 { color: #60c5db; }
   p  { color: rgb(255,255,255); }
 </style>
-
-
