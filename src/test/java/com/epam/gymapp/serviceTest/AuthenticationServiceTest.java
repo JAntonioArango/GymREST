@@ -180,25 +180,21 @@ class AuthenticationServiceTest {
 
   @Test
   void validate_shouldThrowWhenNoMatch() {
-    // Act & Assert
     assertThrows(ApiException.class, () -> service.validate("x", "y"));
   }
 
   @Test
   void validate_shouldThrowWhenUsernameNull() {
-    // Act & Assert
     assertThrows(ApiException.class, () -> service.validate(null, "password"));
   }
 
   @Test
   void validate_shouldThrowWhenPasswordNull() {
-    // Act & Assert
     assertThrows(ApiException.class, () -> service.validate("username", null));
   }
 
   @Test
   void changePassword_shouldThrowWhenUserNotFound() {
-    // Act & Assert
     assertThrows(ApiException.class, () -> service.changePassword("nonexistent", "old", "newpwd"));
   }
 }

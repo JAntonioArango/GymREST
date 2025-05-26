@@ -51,7 +51,7 @@ class TrainingServiceUnitTest {
     User trainerUser = new User();
     trainerUser.setUsername("trainerUser");
     mockType = new TrainingType();
-    mockType.setName("YOGA");
+    mockType.setName(Specialization.YOGA);
     mockTrainer = new Trainer();
     mockTrainer.setUser(trainerUser);
     mockTrainer.setSpecialization(mockType);
@@ -80,7 +80,8 @@ class TrainingServiceUnitTest {
   @Test
   void traineeTrainings_withNullFilter_shouldUseEmptyAndReturnPage() {
     PageImpl<TraineeTrainingDto> page =
-        new PageImpl<>(List.of(new TraineeTrainingDto("n", LocalDate.now(), "type", 10, "tr")));
+        new PageImpl<>(
+            List.of(new TraineeTrainingDto("n", LocalDate.now(), Specialization.CARDIO, 10, "tr")));
     when(trainingRepo.findTraineeTrainingRows(
             eq("user"), isNull(), isNull(), isNull(), isNull(), eq(PageRequest.of(0, 5))))
         .thenReturn(page);
@@ -105,13 +106,14 @@ class TrainingServiceUnitTest {
     assertEquals(one.getId(), dto.id());
     assertEquals("traineeUser", dto.traineeUsername());
     assertEquals("trainerUser", dto.trainerUsername());
-    assertEquals("YOGA", dto.trainingType());
+    assertEquals("YOGA", dto.trainingType().toString());
     assertEquals("name1", dto.trainingName());
   }
 
   @Test
   void listByTrainee_shouldInvokeRepoAndReturnDtos() {
-    TrainingDto td = new TrainingDto(2L, "u", "t", "f", "l", "type", "n", LocalDate.now(), 20);
+    TrainingDto td =
+        new TrainingDto(2L, "u", "t", "f", "l", Specialization.CARDIO, "n", LocalDate.now(), 20);
     when(trainingRepo.findTraineeTrainingsJPQL(eq("u"), any(), any(), any(), any()))
         .thenReturn(List.of(td));
 
@@ -124,11 +126,11 @@ class TrainingServiceUnitTest {
   void listTrainingTypes_shouldConvertEntitiesToDto() {
     TrainingType t1 = new TrainingType();
     t1.setId(10L);
-    t1.setName("CARDIO");
+    t1.setName(Specialization.CARDIO);
     when(typeRepo.findAll()).thenReturn(List.of(t1));
 
     List<TrainingTypeDto> types = service.listTrainingTypes();
-    assertThat(types).containsExactly(new TrainingTypeDto(10L, "CARDIO"));
+    assertThat(types).containsExactly(new TrainingTypeDto(10L, Specialization.CARDIO));
   }
 
   @Test

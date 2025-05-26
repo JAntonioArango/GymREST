@@ -15,7 +15,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none  # ← turns off create/update/validate entirely
+      ddl-auto: none
     open-in-view: false
     properties:
       hibernate:
@@ -23,7 +23,7 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: never   # ensure Spring’s DataSource initializer doesn’t attempt any other scripts
+      mode: never
 
   output:
     ansi:
@@ -34,12 +34,10 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
-# --- SWAGGER (enabled by default) ---
 springfox:
   documentation:
     enabled: ${swagger.enabled:true}
 
-# --- LOGGING (console only!) ---
 logging:
   level:
     com.epam.gymapp: DEBUG

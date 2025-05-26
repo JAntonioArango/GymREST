@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.api.dto.CreateTrainingDto;
 import com.epam.gymapp.api.dto.TrainerTrainingDto;
+import com.epam.gymapp.entities.Specialization;
 import com.epam.gymapp.entities.Trainee;
 import com.epam.gymapp.entities.Trainer;
 import com.epam.gymapp.entities.Training;
@@ -62,24 +63,18 @@ class TrainingServiceTest {
 
   @Test
   void trainerTrainings_nullFilter_usesEmptyAndReturnsPage() {
-    // given
     List<TrainerTrainingDto> data =
-        List.of(new TrainerTrainingDto("name", LocalDate.now(), "TYPE", 30, "trainee"));
+        List.of(
+            new TrainerTrainingDto("name", LocalDate.now(), Specialization.YOGA, 30, "trainee"));
     Page<TrainerTrainingDto> page = new PageImpl<>(data);
     PageRequest pageReq = PageRequest.of(0, 10);
 
     when(trainingRepo.findTrainerTrainingRows(
-            eq("trainer1"),
-            isNull(), // fromDate
-            isNull(), // toDate
-            isNull(), // traineeName
-            eq(pageReq)))
+            eq("trainer1"), isNull(), isNull(), isNull(), eq(pageReq)))
         .thenReturn(page);
 
-    // when
     Page<TrainerTrainingDto> result = service.trainerTrainings("trainer1", null, pageReq);
 
-    // then
     assertEquals(page, result);
     verify(trainingRepo)
         .findTrainerTrainingRows(eq("trainer1"), isNull(), isNull(), isNull(), eq(pageReq));

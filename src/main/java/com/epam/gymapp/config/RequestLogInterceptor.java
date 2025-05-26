@@ -15,7 +15,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
-    // Save timestamp for duration
+
     request.setAttribute(START_TIME, System.currentTimeMillis());
     return true;
   }

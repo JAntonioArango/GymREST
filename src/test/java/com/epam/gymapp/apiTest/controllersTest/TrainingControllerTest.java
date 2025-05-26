@@ -9,7 +9,6 @@ import com.epam.gymapp.api.controllers.TrainingController;
 import com.epam.gymapp.api.dto.*;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainingService;
-import com.epam.gymapp.utils.ApiListWrapper;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -34,22 +33,19 @@ class TrainingControllerTest {
 
   @Test
   void add_ShouldCallServiceAndReturnOk() {
-    // Arrange
+
     CreateTrainingDto createTrainingDto =
         new CreateTrainingDto(
             "Daniela.Lopez123", "Sara.Maria123", "STRENGTH", LocalDate.of(2025, 5, 22), 15);
 
-    // Act
     ResponseEntity<Void> response = trainingController.add(createTrainingDto, mockUser);
 
-    // Assert
     verify(trainingService).addTraining(createTrainingDto);
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
   void traineeTrainings_ShouldReturnTraineeTrainings() {
-    // Arrange
     String username = "testUser";
     LocalDate from = LocalDate.now();
     LocalDate to = LocalDate.now().plusDays(7);
@@ -72,14 +68,13 @@ class TrainingControllerTest {
             eq(PageRequest.of(page, size))))
         .thenReturn(trainingPage);
 
-    // Act
-    ApiListWrapper<TraineeTrainingDto> result =
+    ResponseEntity<List<TraineeTrainingDto>> result =
         trainingController.traineeTrainings(
             username, from, to, trainerName, trainingType, page, size, mockUser);
 
-    // Assert
     assertNotNull(result);
-    assertEquals(trainings, result.items());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(trainings, result.getBody());
     verify(trainingService)
         .traineeTrainings(
             eq(username),
@@ -89,7 +84,6 @@ class TrainingControllerTest {
 
   @Test
   void trainerTrainings_ShouldReturnTrainerTrainings() {
-    // Arrange
     String username = "testTrainer";
     LocalDate from = LocalDate.now();
     LocalDate to = LocalDate.now().plusDays(7);
@@ -106,13 +100,12 @@ class TrainingControllerTest {
             eq(PageRequest.of(page, size))))
         .thenReturn(trainingPage);
 
-    // Act
-    ApiListWrapper<TrainerTrainingDto> result =
+    ResponseEntity<List<TrainerTrainingDto>> result =
         trainingController.trainerTrainings(username, from, to, traineeName, page, size, mockUser);
 
-    // Assert
     assertNotNull(result);
-    assertEquals(trainings, result.items());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(trainings, result.getBody());
     verify(trainingService)
         .trainerTrainings(
             eq(username),
@@ -122,16 +115,14 @@ class TrainingControllerTest {
 
   @Test
   void listTypes_ShouldReturnTrainingTypes() {
-    // Arrange
     List<TrainingTypeDto> types = List.of(/* initialize with test data */ );
     when(trainingService.listTrainingTypes()).thenReturn(types);
 
-    // Act
-    ApiListWrapper<TrainingTypeDto> result = trainingController.listTypes(mockUser);
+    ResponseEntity<List<TrainingTypeDto>> result = trainingController.listTypes(mockUser);
 
-    // Assert
     assertNotNull(result);
-    assertEquals(types, result.items());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(types, result.getBody());
     verify(trainingService).listTrainingTypes();
   }
 }

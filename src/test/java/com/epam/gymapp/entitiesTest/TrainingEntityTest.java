@@ -129,7 +129,6 @@ class TrainingEntityTest {
     Training training3 =
         new Training(2L, trainee, trainer, trainingType, "Training 2", testDate, 45);
 
-    // recursive field-by-field comparison
     assertThat(training1).usingRecursiveComparison().isEqualTo(training2);
 
     assertThat(training1).usingRecursiveComparison().isNotEqualTo(training3);

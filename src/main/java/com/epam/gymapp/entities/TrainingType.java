@@ -20,8 +20,9 @@ public class TrainingType {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "training_type_name", nullable = false, unique = true)
-  private String name;
+  private Specialization name;
 
   @OneToMany(mappedBy = "trainingType")
   private Set<Training> trainings = new HashSet<>();

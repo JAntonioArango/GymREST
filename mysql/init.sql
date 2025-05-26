@@ -55,8 +55,8 @@ INSERT IGNORE INTO training_type (training_type_name) VALUES
   ('AEROBICS'), ('CARDIO'), ('STRENGTH'), ('YOGA'),
   ('PILATES'), ('CROSSFIT'), ('SPINNING'), ('ZUMBA'),
   ('BODYBUILDING'), ('BALANCE'), ('DANCING'),
-  ('BOXING'), ('MEDITATION'), ('OTHER');
-
+  ('BOXING'), ('MEDITATION'), ('OTHER')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
 -- Tiny demo dataset --------------------------------------------------
 INSERT IGNORE INTO users (id, first_name, last_name, username, password, is_active)
 VALUES (1,'Alice','Trainer','alice.trainer','secret',1),

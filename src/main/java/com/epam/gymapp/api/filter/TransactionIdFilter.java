@@ -27,16 +27,13 @@ public class TransactionIdFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
 
-    // 1. Generate or extract incoming Tx-ID
     String txId =
         Optional.ofNullable(request.getHeader(HEADER))
             .filter(h -> !h.isBlank())
             .orElse(UUID.randomUUID().toString());
 
-    // 2. Put it into MDC for all downstream logging
     MDC.put(MDC_KEY, txId);
 
-    // 3. Log “start”
     log.info(
         "==== Start transaction {} for {} {} ====",
         txId,
@@ -48,10 +45,9 @@ public class TransactionIdFilter extends OncePerRequestFilter {
       chain.doFilter(request, response);
     } finally {
       long elapsed = System.currentTimeMillis() - start;
-      // 4. Log “end”
+
       log.info("==== End   transaction {} → {} ({} ms) ====", txId, response.getStatus(), elapsed);
 
-      // 5. Clean up
       MDC.remove(MDC_KEY);
     }
   }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  /** Handle custom ApiException thrown from service layer. */
   @ExceptionHandler(ApiException.class)
   public ResponseEntity<ErrorResponse> handleApiException(ApiException ex, HttpServletRequest req) {
     HttpStatus status = ex.getStatus();
@@ -22,7 +21,6 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(error);
   }
 
-  /** Handle bean validation errors on @Valid request bodies. */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidation(
       MethodArgumentNotValidException ex, HttpServletRequest req) {
@@ -39,7 +37,6 @@ public class GlobalExceptionHandler {
     return ResponseEntity.badRequest().body(error);
   }
 
-  /** Fallback for any uncaught exceptions. */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleAll(Exception ex, HttpServletRequest req) {
     ErrorResponse error =

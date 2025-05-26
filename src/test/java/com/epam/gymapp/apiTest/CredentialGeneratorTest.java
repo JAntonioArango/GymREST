@@ -48,7 +48,6 @@ class CredentialGeneratorTest {
 
   @Test
   void buildUniqueUsername_shouldHandleExistingUsername() {
-    // first attempt collides, second succeeds
     when(userRepository.existsByUsername(anyString())).thenReturn(true).thenReturn(false);
 
     String username = generator.buildUniqueUsername("John", "Doe");
@@ -59,7 +58,6 @@ class CredentialGeneratorTest {
 
   @Test
   void buildUniqueUsername_shouldHandleMultipleExistingUsernames() {
-    // simulate 5 collisions then success
     when(userRepository.existsByUsername(anyString()))
         .thenReturn(true, true, true, true, true)
         .thenReturn(false);

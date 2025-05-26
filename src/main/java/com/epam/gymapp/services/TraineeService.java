@@ -62,14 +62,6 @@ public class TraineeService {
     return toDto(t);
   }
 
-  //  public TraineeDto findByUsername(String username) {
-  //
-  //    return traineeRepo
-  //        .findByUserUsername(username)
-  //        .map(this::toDto)
-  //        .orElseThrow(() -> ApiException.notFound("Trainee", id));
-  //  }
-
   public TraineeProfileDto updateProfile(String username, UpdateTraineeDto dto) {
 
     Trainee t =
@@ -96,27 +88,11 @@ public class TraineeService {
             .findByUserUsername(username)
             .orElseThrow(() -> ApiException.notFound("Trainee", username));
 
-    // detach from trainers
     trainee.getTrainers().forEach(tr -> tr.getTrainees().remove(trainee));
     trainee.getTrainers().clear();
 
-    traineeRepo.delete(trainee); // JPA cascades remove to trainings
+    traineeRepo.delete(trainee);
   }
-
-  //  public void changePassword(String username, String currentPwd, String newPwd) {
-  //
-  //    // 1) authenticate
-  //    boolean ok = traineeRepo.existsByUserUsernameAndUserPassword(username, currentPwd);
-  //    if (!ok) throw ApiException.badCredentials();
-  //
-  //    // 2) update
-  //    Trainee trainee =
-  //        traineeRepo
-  //            .findByUserUsername(username)
-  //            .orElseThrow(() -> ApiException.notFound("Trainee", username));
-  //
-  //    trainee.getUser().setPassword(newPwd);
-  //  }
 
   public TraineeDto setActive(String username, boolean active) {
 
@@ -128,39 +104,6 @@ public class TraineeService {
     trainee.getUser().setActive(active);
     return toDto(trainee);
   }
-
-  //  public TraineeDto updateTrainers(String traineeUsername, Set<Long> trainerIds) {
-  //
-  //    Trainee trainee =
-  //        traineeRepo
-  //            .findByUserUsername(traineeUsername)
-  //            .orElseThrow(() -> ApiException.notFound("Trainee", traineeUsername));
-  //
-  //    List<Trainer> trainers = trainerRepo.findAllById(trainerIds);
-  //    verifySize(trainerIds, trainers);
-  //
-  //    for (Trainer old : new HashSet<>(trainee.getTrainers())) {
-  //      old.getTrainees().remove(trainee);
-  //    }
-  //    trainee.getTrainers().clear();
-  //
-  //    addNewLines(trainers, trainee);
-  //
-  //    return toDto(trainee);
-  //  }
-
-  //  private static void verifySize(Set<Long> trainerIds, List<Trainer> trainers) {
-  //    if (trainers.size() != trainerIds.size()) {
-  //      throw ApiException.badRequest("One or more trainer IDs not found");
-  //    }
-  //  }
-
-  //  private static void addNewLines(List<Trainer> trainers, Trainee trainee) {
-  //    for (Trainer t : trainers) {
-  //      trainee.getTrainers().add(t);
-  //      t.getTrainees().add(trainee);
-  //    }
-  //  }
 
   public Page<TraineeDto> list(Pageable pageable) {
     return traineeRepo.findAll(pageable).map(this::toDto);
@@ -212,24 +155,19 @@ public class TraineeService {
   public List<TrainerShortDto> replaceTrainers(
       String traineeUsername, List<String> trainerUsernames) {
 
-    // 1) Load trainee
     Trainee trainee =
         traineeRepo
             .findByUserUsername(traineeUsername)
             .orElseThrow(() -> ApiException.notFound("Trainee", traineeUsername));
 
-    // 2) Fetch all trainers whose username is in the list
     List<Trainer> trainers = trainerRepo.findByUserUsernameIn(trainerUsernames);
 
-    // 3) Verify all usernames exist
     if (trainers.size() != trainerUsernames.size()) {
       throw ApiException.notFound("Trainer IDs", String.join(",", trainerUsernames));
     }
 
-    // 4) Replace the association
     trainee.setTrainers(new HashSet<>(trainers));
 
-    // 5) Return mapped list
     return trainers.stream()
         .map(
             tr ->

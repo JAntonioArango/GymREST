@@ -26,13 +26,12 @@ public class OpenApiConfig {
         .addServersItem(new Server().url("http://localhost:8080"));
   }
 
-  /** Limit docs to your controllers package (optional but keeps UI clean) */
   @Bean
   public GroupedOpenApi gymApi() {
     return GroupedOpenApi.builder()
-        .group("gym") // ← you picked this name
-        .packagesToScan("com.epam.gymapp.api.controllers") // MUST match your controllers’ package
-        .pathsToMatch("/**") // or "/**" if you prefer
+        .group("gym")
+        .packagesToScan("com.epam.gymapp.api.controllers")
+        .pathsToMatch("/**")
         .build();
   }
 }

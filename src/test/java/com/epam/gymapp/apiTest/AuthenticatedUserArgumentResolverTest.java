@@ -56,17 +56,14 @@ class AuthenticatedUserArgumentResolverTest {
 
   @Test
   void resolveArgument_shouldReturnUserWhenCredentialsPresent() throws Exception {
-    // Arrange
     when(webRequest.getParameter("username")).thenReturn("john");
     when(webRequest.getParameter("password")).thenReturn("secret");
     User expected = new User();
     when(authService.validate("john", "secret")).thenReturn(expected);
 
     MethodParameter fakeParam = mock(MethodParameter.class);
-    // Act
     Object result = resolver.resolveArgument(fakeParam, mavContainer, webRequest, binderFactory);
 
-    // Assert
     assertSame(expected, result);
     verify(authService).validate("john", "secret");
   }
@@ -91,7 +88,6 @@ class AuthenticatedUserArgumentResolverTest {
         () -> resolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory));
   }
 
-  // Dummy controller for reflection
   private static class TestController {
     public void validMethod(@AuthenticatedUser User user) {}
 

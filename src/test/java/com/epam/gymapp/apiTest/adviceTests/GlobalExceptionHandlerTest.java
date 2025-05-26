@@ -37,16 +37,13 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleApiException_ShouldReturnCorrectResponseEntity() {
-    // Arrange
     HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
     String expectedMessage = "Resource not found";
     ApiException apiException = new ApiException(expectedStatus, expectedMessage);
 
-    // Act
     ResponseEntity<ErrorResponse> responseEntity =
         exceptionHandler.handleApiException(apiException, request);
 
-    // Assert
     assertNotNull(responseEntity);
     assertEquals(expectedStatus, responseEntity.getStatusCode());
     ErrorResponse error = responseEntity.getBody();
@@ -55,7 +52,6 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleValidation_ShouldReturnCorrectResponseEntity() {
-    // Arrange
     List<FieldError> fieldErrors =
         List.of(
             new FieldError("object", "field1", "must not be blank"),
@@ -64,11 +60,9 @@ class GlobalExceptionHandlerTest {
     when(methodArgumentNotValidException.getBindingResult()).thenReturn(bindingResult);
     when(bindingResult.getFieldErrors()).thenReturn(fieldErrors);
 
-    // Act
     ResponseEntity<ErrorResponse> responseEntity =
         exceptionHandler.handleValidation(methodArgumentNotValidException, request);
 
-    // Assert
     assertNotNull(responseEntity);
     assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     ErrorResponse error = responseEntity.getBody();
@@ -77,14 +71,11 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleAll_ShouldReturnCorrectResponseEntity() {
-    // Arrange
     String expectedMessage = "Unexpected error";
     Exception exception = new RuntimeException(expectedMessage);
 
-    // Act
     ResponseEntity<ErrorResponse> responseEntity = exceptionHandler.handleAll(exception, request);
 
-    // Assert
     assertNotNull(responseEntity);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     ErrorResponse error = responseEntity.getBody();

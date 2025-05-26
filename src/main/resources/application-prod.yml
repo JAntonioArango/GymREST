@@ -1,7 +1,6 @@
 spring:
   profiles: prod
 
-# Disable all springfox endpoints
 swagger:
   enabled: false
 springfox:

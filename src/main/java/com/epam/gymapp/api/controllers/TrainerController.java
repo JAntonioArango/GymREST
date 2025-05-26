@@ -20,7 +20,6 @@ public class TrainerController {
 
   private final TrainerService trainerService;
 
-  /* --------- CREATE --------- */
   @PostMapping("/register")
   @Operation(summary = "Trainer Registration (2)")
   public ResponseEntity<TrainerRegistrationDto> create(@Valid @RequestBody CreateTrainerDto dto) {
@@ -29,7 +28,6 @@ public class TrainerController {
     return ResponseEntity.status(HttpStatus.CREATED).body(created);
   }
 
-  /* ---------- READ ---------- */
   @GetMapping("/{username}")
   @Operation(summary = "Get trainer profile (8)")
   public TrainerProfileDto getProfile(
@@ -38,18 +36,6 @@ public class TrainerController {
     return trainerService.findProfile(username);
   }
 
-  //  @GetMapping
-  //  @Operation(summary = "List trainers - paged")
-  //  public ApiListWrapper<TrainerDto> list(
-  //      @RequestParam(defaultValue = "0") int page,
-  //      @RequestParam(defaultValue = "20") int size,
-  //      @AuthenticatedUser User caller) {
-  //
-  //    Page<TrainerDto> p = trainerService.list(PageRequest.of(page, size));
-  //    return new ApiListWrapper<>(p.getContent()); // simple wrapper
-  //  }
-
-  /* ------ UPDATE (PUT) ------ */
   @PutMapping("/{username}")
   @Operation(summary = "Update trainer profile (9)")
   public TrainerProfileDto updateProfile(
@@ -60,7 +46,6 @@ public class TrainerController {
     return trainerService.updateProfile(username, body);
   }
 
-  /* -- ACTIVATE/DEACTIVATE (PATCH) -- */
   @PatchMapping("/{username}/active")
   @Operation(summary = "Activate/De-Activate Trainer (16)")
   public ResponseEntity<Void> setActive(

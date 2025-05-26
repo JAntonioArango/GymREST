@@ -45,14 +45,11 @@ class TraineeServiceTest {
 
   @Test
   void createProfile_shouldSaveAndReturnDto() {
-    // arrange
     when(creds.buildUniqueUsername("John", "Doe")).thenReturn("jdoe");
     when(traineeRepo.save(any(Trainee.class))).thenAnswer(inv -> inv.getArgument(0));
 
-    // act
     TraineeDto result = service.createProfile(dto);
 
-    // assert
     assertNotNull(result);
     assertEquals("jdoe", result.username());
     assertEquals("John", result.firstName());
@@ -62,17 +59,14 @@ class TraineeServiceTest {
 
   @Test
   void register_shouldThrowWhenTrainerExists() {
-    // arrange
     when(trainerRepo.existsByUserFirstNameAndUserLastName("John", "Doe")).thenReturn(true);
 
-    // act & assert
     assertThrows(ApiException.class, () -> service.register(dto));
     verify(trainerRepo).existsByUserFirstNameAndUserLastName("John", "Doe");
   }
 
   @Test
   void register_shouldReturnCredentialsWhenSuccess() {
-    // arrange
     when(trainerRepo.existsByUserFirstNameAndUserLastName(any(), any())).thenReturn(false);
     service = spy(service);
     TraineeDto saved =
@@ -83,10 +77,8 @@ class TraineeServiceTest {
     user.setPassword("pass123");
     when(userRepository.findByUsername("jdoe")).thenReturn(java.util.Optional.of(user));
 
-    // act
     TraineeRegistrationDto reg = service.register(dto);
 
-    // assert
     assertEquals("jdoe", reg.username());
     assertEquals("pass123", reg.password());
     verify(service).createProfile(dto);

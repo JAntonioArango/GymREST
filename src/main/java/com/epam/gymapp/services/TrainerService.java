@@ -52,7 +52,7 @@ public class TrainerService {
     TrainingType spec =
         typeRepo
             .findByName(dto.specialization())
-            .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization()));
+            .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization().name()));
 
     User u =
         new User(
@@ -93,18 +93,6 @@ public class TrainerService {
 
     return toProfileDto(trainer);
   }
-
-  //  private void checker(CreateTrainerDto dto, Trainer trainer) {
-  //    if (dto.specialization() != null
-  //        && !dto.specialization().equals(trainer.getSpecialization().getName())) {
-  //
-  //      TrainingType spec =
-  //          typeRepo
-  //              .findByName(dto.specialization())
-  //              .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization()));
-  //      trainer.setSpecialization(spec);
-  //    }
-  //  }
 
   public void changePassword(String username, String currentPwd, String newPwd) {
 
@@ -177,13 +165,11 @@ public class TrainerService {
 
   public List<TrainerShortDto> unassignedActiveTrainers(String traineeUsername) {
 
-    // 1) IDs of trainers already linked to this trainee
     Set<Long> assignedIds =
         trainerRepo.findByTraineesUserUsername(traineeUsername).stream()
             .map(Trainer::getId)
             .collect(Collectors.toSet());
 
-    // 2) Return trainers NOT in that list and whose user is active
     return trainerRepo.findAll().stream()
         .filter(t -> !assignedIds.contains(t.getId()) && t.getUser().isActive())
         .map(

@@ -21,9 +21,8 @@ class TrainerEntityTest {
   @BeforeEach
   void setUp() {
     trainer = new Trainer();
-    user = new User(); // You'll need to create a minimal User class for testing
-    specialization =
-        new TrainingType(); // You'll need to create a minimal TrainingType class for testing
+    user = new User();
+    specialization = new TrainingType();
   }
 
   @Test
@@ -69,7 +68,7 @@ class TrainerEntityTest {
 
   @Test
   void testAddAndRemoveTrainee() {
-    Trainee trainee = new Trainee(); // You'll need to create a minimal Trainee class for testing
+    Trainee trainee = new Trainee();
 
     trainer.getTrainees().add(trainee);
     assertEquals(1, trainer.getTrainees().size());
@@ -82,8 +81,7 @@ class TrainerEntityTest {
 
   @Test
   void testAddAndRemoveTraining() {
-    Training training =
-        new Training(); // You'll need to create a minimal Training class for testing
+    Training training = new Training();
 
     trainer.getTrainings().add(training);
     assertEquals(1, trainer.getTrainings().size());

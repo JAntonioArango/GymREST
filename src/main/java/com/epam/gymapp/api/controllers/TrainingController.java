@@ -4,7 +4,6 @@ import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainingService;
-import com.epam.gymapp.utils.ApiListWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,7 +24,6 @@ public class TrainingController {
 
   private final TrainingService service;
 
-  /* --------- CREATE --------- */
   @PostMapping("/add")
   @Operation(summary = "Add Training (14)")
   public ResponseEntity<Void> add(
@@ -36,11 +34,9 @@ public class TrainingController {
     return ResponseEntity.ok().build();
   }
 
-  /* --------- READ --------- */
-
   @GetMapping("/trainee/{username}")
   @Operation(summary = "Get Trainee Trainings List (12)")
-  public ApiListWrapper<TraineeTrainingDto> traineeTrainings(
+  public ResponseEntity<List<TraineeTrainingDto>> traineeTrainings(
       @PathVariable String username,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -55,12 +51,12 @@ public class TrainingController {
     Page<TraineeTrainingDto> p =
         service.traineeTrainings(username, filter, PageRequest.of(page, size));
 
-    return new ApiListWrapper<>(p.getContent());
+    return ResponseEntity.ok(p.getContent());
   }
 
   @GetMapping("/trainer/{username}")
   @Operation(summary = "Get Trainer Trainings List (13)")
-  public ApiListWrapper<TrainerTrainingDto> trainerTrainings(
+  public ResponseEntity<List<TrainerTrainingDto>> trainerTrainings(
       @PathVariable String username,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -74,23 +70,15 @@ public class TrainingController {
     Page<TrainerTrainingDto> p =
         service.trainerTrainings(username, filter, PageRequest.of(page, size));
 
-    return new ApiListWrapper<>(p.getContent());
+    return ResponseEntity.ok(p.getContent());
   }
 
   @GetMapping("/types")
   @Operation(summary = "Get Training Types (17)")
-  public ApiListWrapper<TrainingTypeDto> listTypes(@AuthenticatedUser User caller) {
+  public ResponseEntity<List<TrainingTypeDto>> listTypes(@AuthenticatedUser User caller) {
 
     List<TrainingTypeDto> types = service.listTrainingTypes();
 
-    return new ApiListWrapper<>(types);
+    return ResponseEntity.ok(types);
   }
-
-  /* ------ HELPERS ------ */
-  //  private static boolean isDateOk(TrainingDto t, TrainingService.TrainingFilter f) {
-  //    boolean dateOk =
-  //        (f.fromDate() == null || !t.trainingDate().isBefore(f.fromDate()))
-  //            && (f.toDate() == null || !t.trainingDate().isAfter(f.toDate()));
-  //    return dateOk;
-  //  }
 }

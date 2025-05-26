@@ -113,7 +113,6 @@ class UserEntityTest {
     User user2 = new User();
     user2.setUsername("uniqueusername");
 
-    // Note: Actual database constraints would need to be tested with integration tests
     assertNotEquals(user1, user2);
   }
 

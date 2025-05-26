@@ -8,6 +8,7 @@ import com.epam.gymapp.entities.Training;
 import com.epam.gymapp.repositories.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +43,7 @@ public class TrainingService {
             null,
             trainee,
             trainer,
-            trainer.getSpecialization(), // type inferred from trainer
+            trainer.getSpecialization(),
             dto.trainingName(),
             dto.date(),
             dto.duration());
@@ -53,7 +54,7 @@ public class TrainingService {
   public Page<TraineeTrainingDto> traineeTrainings(
       String traineeUsername, TrainingFilter f, Pageable pageable) {
 
-    TrainingFilter filter = (f == null) ? TrainingFilter.EMPTY : f;
+    TrainingFilter filter = Optional.ofNullable(f).orElse(TrainingFilter.EMPTY);
 
     return trainingRepo.findTraineeTrainingRows(
         traineeUsername,
@@ -72,7 +73,7 @@ public class TrainingService {
 
   public List<TrainingDto> listByTrainee(String traineeUsername, TrainingFilter filter) {
 
-    var f = (filter == null) ? TrainingFilter.EMPTY : filter;
+    var f = Optional.ofNullable(filter).orElse(TrainingFilter.EMPTY);
 
     return trainingRepo.findTraineeTrainingsJPQL(
         traineeUsername, f.fromDate(), f.toDate(), f.trainerNameOrNull(), f.trainingTypeOrNull());
@@ -87,7 +88,6 @@ public class TrainingService {
     /** A pre-built “no criteria” instance so callers can avoid null checks */
     public static final TrainingFilter EMPTY = new TrainingFilter(null, null, null, null, null);
 
-    /* -------- helper accessors that normalise blank strings to null -------- */
     public String trainerNameOrNull() {
       return blankToNull(trainerName);
     }
@@ -100,13 +100,6 @@ public class TrainingService {
       return blankToNull(trainingType);
     }
   }
-
-  // Get trainer’s trainings by optional filters (date range, trainee name)
-  //  public List<TrainingDto> listByTrainer(
-  //      String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName) {
-  //    return trainingRepo.findTrainerTrainingsJPQL(
-  //        trainerUsername, fromDate, toDate, blankToNull(traineeName));
-  //  }
 
   private static String blankToNull(String s) {
     return (s == null || s.isBlank()) ? null : s;
@@ -128,7 +121,7 @@ public class TrainingService {
   public Page<TrainerTrainingDto> trainerTrainings(
       String trainerUsername, TrainingFilter f, Pageable pageable) {
 
-    TrainingFilter filter = (f == null) ? TrainingFilter.EMPTY : f;
+    TrainingFilter filter = Optional.ofNullable(f).orElse(TrainingFilter.EMPTY);
 
     return trainingRepo.findTrainerTrainingRows(
         trainerUsername, filter.fromDate(), filter.toDate(), filter.traineeNameOrNull(), pageable);

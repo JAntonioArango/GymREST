@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.api.dto.CreateTrainerDto;
 import com.epam.gymapp.api.dto.TrainerDto;
+import com.epam.gymapp.entities.Specialization;
 import com.epam.gymapp.entities.Trainer;
 import com.epam.gymapp.entities.TrainingType;
 import com.epam.gymapp.repositories.TraineeRepo;
@@ -36,34 +37,30 @@ class TrainerServiceTest {
 
   @BeforeEach
   void init() {
-    dto = new CreateTrainerDto("Alice", "Smith", "CARDIO");
+    dto = new CreateTrainerDto("Alice", "Smith", Specialization.CARDIO);
   }
 
   @Test
   void createProfile_shouldLoadTypeSaveAndReturnDto() {
-    // arrange
     when(creds.buildUniqueUsername("Alice", "Smith")).thenReturn("asmith");
-    when(typeRepo.findByName("CARDIO"))
-        .thenReturn(Optional.of(new TrainingType(1L, "CARDIO", null)));
+    when(typeRepo.findByName(Specialization.CARDIO))
+        .thenReturn(Optional.of(new TrainingType(1L, Specialization.CARDIO, null)));
     when(trainerRepo.save(any(Trainer.class))).thenAnswer(inv -> inv.getArgument(0));
 
-    // act
     TrainerDto result = service.createProfile(dto);
 
-    // assert
     assertNotNull(result);
     assertEquals("asmith", result.username());
-    assertEquals("CARDIO", result.specialization());
+    assertEquals("CARDIO", result.specialization().toString());
     verify(creds).buildUniqueUsername("Alice", "Smith");
     verify(trainerRepo).save(any(Trainer.class));
   }
 
   @Test
   void register_shouldThrowWhenTraineeExists() {
-    // arrange
+
     when(traineeRepo.existsByUserFirstNameAndUserLastName("Alice", "Smith")).thenReturn(true);
 
-    // act & assert
     assertThrows(ApiException.class, () -> service.register(dto));
     verify(traineeRepo).existsByUserFirstNameAndUserLastName("Alice", "Smith");
   }
