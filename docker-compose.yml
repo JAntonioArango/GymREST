@@ -1,20 +1,22 @@
 services:
   db:
-    build: ./mysql
+    image: mysql:8.3
+    container_name: gym_mysql
+    restart: unless-stopped
     ports:
       - "3306:3306"
 
     # ← picks up MYSQL_… from .env
-    environment:
-      - SPRING_DATASOURCE_URL
-      - SPRING_DATASOURCE_USERNAME
-      - SPRING_DATASOURCE_PASSWORD
-      - SPRING_JPA_HIBERNATE_DDL_AUTO
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA
+#    environment:
+#      - SPRING_DATASOURCE_URL
+#      - SPRING_DATASOURCE_USERNAME
+#      - SPRING_DATASOURCE_PASSWORD
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,6 +32,7 @@ services:
       - SPRING_DATASOURCE_URL
       - SPRING_DATASOURCE_USERNAME
       - SPRING_DATASOURCE_PASSWORD
+      - SPRING_JPA_DATABASE_PLATFORM
       - SERVER_PORT=8080
 
   sonarqube:
@@ -49,7 +52,33 @@ services:
       interval: 10s
       retries: 10
 
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    depends_on:
+      app:
+        condition: service_started
+
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      prometheus:
+        condition: service_started
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 volumes:
   db-data:
   sonarqube_data:
   sonarqube_extensions:
+  grafana_data:

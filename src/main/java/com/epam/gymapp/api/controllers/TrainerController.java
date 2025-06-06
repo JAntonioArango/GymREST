@@ -4,6 +4,7 @@ import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainerService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,6 +21,10 @@ public class TrainerController {
 
   private final TrainerService trainerService;
 
+  @Timed(
+      value = "create.duration",
+      description = "Time spent on creating trainer",
+      histogram = true)
   @PostMapping("/register")
   @Operation(summary = "Trainer Registration (2)")
   public ResponseEntity<TrainerRegistrationDto> create(@Valid @RequestBody CreateTrainerDto dto) {

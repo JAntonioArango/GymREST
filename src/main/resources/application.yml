@@ -3,7 +3,7 @@ spring:
     name: GymTaskREST
 
   datasource:
-    url:      ${SPRING_DATASOURCE_URL:jdbc:mysql://db:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    url:      ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:gymuser}
     password: ${SPRING_DATASOURCE_PASSWORD:gympass}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -46,7 +46,37 @@ logging:
     javax.management.remote: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
+    org.springframework.boot.actuate.health: DEBUG
+    com.epam.gymapp.actuator: DEBUG
+    io.micrometer: DEBUG
+    io.micrometer.core.instrument: DEBUG
 
   pattern:
     console: "%d{HH:mm:ss.SSS} %black(|) %highlight(%-4level) %black(|) %highlight(%-4.4t) %black(|) %cyan(%-35.35logger{25}) %black(|) %highlight(%m%n)"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      base-path: /ops
+      path-mapping:
+        health: gym-health
+        prometheus: prometheus
+      exposure:
+        include:
+          - health
+          - prometheus
+          - metrics
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+      export:
+        prometheus:
+          enabled: true
+
+
+

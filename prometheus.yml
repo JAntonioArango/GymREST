@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'spring-boot-gym'
+    metrics_path: '/ops/prometheus'
+    static_configs:
+      - targets: ['app:8080']
