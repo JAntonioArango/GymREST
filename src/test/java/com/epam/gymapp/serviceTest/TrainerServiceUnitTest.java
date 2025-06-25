@@ -21,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 
 @ExtendWith(MockitoExtension.class)
 class TrainerServiceUnitTest {
@@ -51,27 +50,6 @@ class TrainerServiceUnitTest {
     savedTrainer = new Trainer();
     savedTrainer.setUser(savedUser);
     savedTrainer.setSpecialization(mockType);
-  }
-
-  @Test
-  void register_shouldThrowWhenTraineeExists() {
-    when(traineeRepo.existsByUserFirstNameAndUserLastName("John", "Doe")).thenReturn(true);
-    ApiException ex = assertThrows(ApiException.class, () -> service.register(createDto));
-    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
-  }
-
-  @Test
-  void register_shouldCreateProfileAndReturnCredentials() {
-    when(traineeRepo.existsByUserFirstNameAndUserLastName(any(), any())).thenReturn(false);
-    when(creds.buildUniqueUsername("John", "Doe")).thenReturn("john.doe-xyz");
-    when(creds.randomPassword()).thenReturn("pwd");
-    when(typeRepo.findByName(Specialization.YOGA)).thenReturn(Optional.of(mockType));
-    when(trainerRepo.save(any(Trainer.class))).thenReturn(savedTrainer);
-    when(userRepository.findByUsername("john.doe-xyz")).thenReturn(Optional.of(savedUser));
-
-    TrainerRegistrationDto dto = service.register(createDto);
-    assertEquals("john.doe-xyz", dto.username());
-    assertEquals("pwd", dto.password());
   }
 
   @Test

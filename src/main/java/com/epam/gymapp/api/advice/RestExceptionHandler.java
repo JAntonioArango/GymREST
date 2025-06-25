@@ -2,9 +2,11 @@ package com.epam.gymapp.api.advice;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import javax.security.auth.login.LoginException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,5 +33,15 @@ public class RestExceptionHandler {
     pd.setDetail(ex.getMessage());
     pd.setProperty("path", req.getRequestURI());
     return ResponseEntity.status(ex.getStatus()).body(pd);
+  }
+
+  @ExceptionHandler(LoginException.class)
+  public ResponseEntity<ProblemDetail> locked(LockedException ex, HttpServletRequest req) {
+
+    ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.LOCKED);
+    pd.setTitle("Account temporarily locked");
+    pd.setDetail(ex.getMessage());
+    pd.setProperty("path", req.getRequestURI());
+    return ResponseEntity.status(pd.getStatus()).body(pd);
   }
 }

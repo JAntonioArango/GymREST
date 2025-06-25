@@ -7,7 +7,6 @@ import com.epam.gymapp.entities.Trainer;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.repositories.TraineeRepo;
 import com.epam.gymapp.repositories.TrainerRepo;
-import com.epam.gymapp.repositories.UserRepository;
 import com.epam.gymapp.utils.CredentialGenerator;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
@@ -15,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +25,7 @@ public class TraineeService {
   private final TraineeRepo traineeRepo;
   private final CredentialGenerator creds;
   private final TrainerRepo trainerRepo;
-  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   public TraineeRegistrationDto register(CreateTraineeDto dto) {
 
@@ -34,23 +34,20 @@ public class TraineeService {
           "Cannot register as trainee; a trainer with the same name already exists");
     }
 
-    TraineeDto saved = createProfile(dto);
+    String rawPwd = creds.randomPassword();
 
-    User u =
-        userRepository
-            .findByUsername(saved.username())
-            .orElseThrow(() -> ApiException.notFound("User", saved.username()));
+    Trainee trainee = buildAndSaveEntity(dto, rawPwd);
 
-    return new TraineeRegistrationDto(u.getUsername(), u.getPassword());
+    return new TraineeRegistrationDto(trainee.getUser().getUsername(), rawPwd);
   }
 
-  public TraineeDto createProfile(CreateTraineeDto dto) {
+  private Trainee buildAndSaveEntity(CreateTraineeDto dto, String rawPwd) {
 
     User u = new User();
     u.setFirstName(dto.firstName());
     u.setLastName(dto.lastName());
     u.setUsername(creds.buildUniqueUsername(dto.firstName(), dto.lastName()));
-    u.setPassword(creds.randomPassword());
+    u.setPassword(passwordEncoder.encode(rawPwd));
     u.setActive(true);
 
     Trainee t = new Trainee();
@@ -58,8 +55,16 @@ public class TraineeService {
     t.setDateOfBirth(dto.dateOfBirth());
     t.setAddress(dto.address());
 
-    traineeRepo.save(t);
-    return toDto(t);
+    return traineeRepo.save(t);
+  }
+
+  public TraineeDto createProfile(CreateTraineeDto dto) {
+
+    String rawPwd = creds.randomPassword();
+
+    Trainee trainee = buildAndSaveEntity(dto, rawPwd);
+
+    return toDto(trainee);
   }
 
   public TraineeProfileDto updateProfile(String username, UpdateTraineeDto dto) {

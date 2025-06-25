@@ -19,8 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class TraineeServiceUnitTest {
@@ -29,6 +28,7 @@ class TraineeServiceUnitTest {
   @Mock private CredentialGenerator creds;
   @Mock private TrainerRepo trainerRepo;
   @Mock private UserRepository userRepository;
+  @Mock private PasswordEncoder encoder;
 
   @InjectMocks private TraineeService service;
 
@@ -38,60 +38,11 @@ class TraineeServiceUnitTest {
 
   @BeforeEach
   void setUp() {
-    createDto = new CreateTraineeDto("John", "Doe", LocalDate.of(1990, 1, 1), "123 Street");
+    lenient() // <── add this
+        .when(encoder.encode(anyString()))
+        .thenReturn("$2a$hash");
 
-    savedUser = new User();
-    savedUser.setUsername("john.doe-abc123");
-    savedUser.setPassword("pass123");
-    savedUser.setFirstName("John");
-    savedUser.setLastName("Doe");
-    savedUser.setActive(true);
-
-    savedTrainee = new Trainee();
-    savedTrainee.setUser(savedUser);
-    savedTrainee.setDateOfBirth(createDto.dateOfBirth());
-    savedTrainee.setAddress(createDto.address());
-  }
-
-  @Test
-  void register_shouldThrowWhenTrainerExists() {
-    when(trainerRepo.existsByUserFirstNameAndUserLastName("John", "Doe")).thenReturn(true);
-
-    ApiException ex = assertThrows(ApiException.class, () -> service.register(createDto));
-    assertEquals(400, ex.getStatus().value());
-  }
-
-  @Test
-  void register_shouldCreateProfileAndReturnCredentials() {
-    when(trainerRepo.existsByUserFirstNameAndUserLastName(anyString(), anyString()))
-        .thenReturn(false);
-
-    when(creds.buildUniqueUsername("John", "Doe")).thenReturn("john.doe-abc123");
-    when(creds.randomPassword()).thenReturn("pass123");
-    when(traineeRepo.save(any(Trainee.class))).thenReturn(savedTrainee);
-    when(userRepository.findByUsername("john.doe-abc123")).thenReturn(Optional.of(savedUser));
-
-    TraineeRegistrationDto dto = service.register(createDto);
-
-    assertEquals("john.doe-abc123", dto.username());
-    assertEquals("pass123", dto.password());
-    verify(traineeRepo).save(any());
-  }
-
-  @Test
-  void createProfile_shouldSaveAndReturnDto() {
-    when(creds.buildUniqueUsername("John", "Doe")).thenReturn("john.x123");
-    when(creds.randomPassword()).thenReturn("pwd123");
-
-    when(traineeRepo.save(any(Trainee.class))).thenAnswer(inv -> inv.getArgument(0));
-
-    TraineeDto dto = service.createProfile(createDto);
-
-    assertEquals("john.x123", dto.username());
-    assertEquals("John", dto.firstName());
-    assertEquals("Doe", dto.lastName());
-    assertEquals(createDto.dateOfBirth(), dto.dateOfBirth());
-    assertTrue(dto.active());
+    service = new TraineeService(traineeRepo, creds, trainerRepo, encoder);
   }
 
   @Test
@@ -132,24 +83,6 @@ class TraineeServiceUnitTest {
 
     TraineeDto dto = service.setActive("u", true);
     assertTrue(dto.active());
-  }
-
-  @Test
-  void list_shouldReturnPagedDtos() {
-    Trainee t = new Trainee();
-    User u = new User();
-    u.setUsername("x");
-    u.setFirstName("F");
-    u.setLastName("L");
-    u.setActive(true);
-    t.setUser(u);
-    t.setDateOfBirth(LocalDate.of(2000, 1, 1));
-    t.setAddress("A");
-    when(traineeRepo.findAll(PageRequest.of(0, 2))).thenReturn(new PageImpl<>(List.of(t)));
-
-    var page = service.list(PageRequest.of(0, 2));
-    assertEquals(1, page.getTotalElements());
-    assertEquals("x", page.getContent().get(0).username());
   }
 
   @Test

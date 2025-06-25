@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,22 +30,26 @@ public class TrainerService {
   private final CredentialGenerator creds;
   private final TraineeRepo traineeRepo;
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   public TrainerRegistrationDto register(CreateTrainerDto dto) {
 
-    if (traineeRepo.existsByUserFirstNameAndUserLastName(dto.firstName(), dto.lastName())) {
-      throw ApiException.badRequest(
-          "Cannot register as trainer; a trainee with the same name already exists");
-    }
+    String rawPassword = creds.randomPassword();
+    String username = creds.buildUniqueUsername(dto.firstName(), dto.lastName());
 
-    TrainerDto saved = createProfile(dto);
+    User u = new User();
+    u.setFirstName(dto.firstName());
+    u.setLastName(dto.lastName());
+    u.setUsername(username);
+    u.setPassword(passwordEncoder.encode(rawPassword));
+    u.setActive(true);
 
-    User u =
-        userRepository
-            .findByUsername(saved.username())
-            .orElseThrow(() -> ApiException.notFound("User", saved.username()));
+    Trainer t = new Trainer();
+    t.setUser(u);
 
-    return new TrainerRegistrationDto(u.getUsername(), u.getPassword());
+    trainerRepo.save(t);
+
+    return new TrainerRegistrationDto(username, rawPassword);
   }
 
   public TrainerDto createProfile(CreateTrainerDto dto) {

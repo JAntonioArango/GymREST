@@ -3,7 +3,6 @@ package com.epam.gymapp.serviceTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.api.dto.CreateTrainerDto;
 import com.epam.gymapp.api.dto.TrainerDto;
 import com.epam.gymapp.entities.Specialization;
@@ -54,14 +53,5 @@ class TrainerServiceTest {
     assertEquals("CARDIO", result.specialization().toString());
     verify(creds).buildUniqueUsername("Alice", "Smith");
     verify(trainerRepo).save(any(Trainer.class));
-  }
-
-  @Test
-  void register_shouldThrowWhenTraineeExists() {
-
-    when(traineeRepo.existsByUserFirstNameAndUserLastName("Alice", "Smith")).thenReturn(true);
-
-    assertThrows(ApiException.class, () -> service.register(dto));
-    verify(traineeRepo).existsByUserFirstNameAndUserLastName("Alice", "Smith");
   }
 }

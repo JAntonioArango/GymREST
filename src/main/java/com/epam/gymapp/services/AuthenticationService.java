@@ -4,6 +4,13 @@ import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,19 +18,39 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-  private final UserRepository repo;
+  private final AuthenticationManager authManager;
+  private final PasswordEncoder encoder;
+  private final UserRepository userRepo;
+  private final LoginAttemptService attemptService;
 
-  @Transactional(readOnly = true)
-  public User validate(String username, String password) {
+  public User validate(String username, String rawPassword) {
 
-    return repo.findByUsernameAndPassword(username, password)
-        .orElseThrow(() -> ApiException.badCredentials());
+    attemptService.assertNotLocked(username);
+
+    try {
+      Authentication auth =
+          authManager.authenticate(new UsernamePasswordAuthenticationToken(username, rawPassword));
+
+      SecurityContextHolder.getContext().setAuthentication(auth);
+      attemptService.reset(username);
+      return userRepo.findByUsername(username).orElseThrow();
+    } catch (BadCredentialsException e) {
+      attemptService.recordFailure(username);
+      throw ApiException.badCredentials();
+    }
   }
 
   @Transactional
   public void changePassword(String username, String oldPassword, String newPassword) {
 
-    User user = validate(username, oldPassword);
-    user.setPassword(newPassword);
+    User user =
+        userRepo
+            .findByUsername(username)
+            .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
+
+    if (!encoder.matches(oldPassword, user.getPassword())) {
+      throw ApiException.badCredentials();
+    }
+    user.setPassword(encoder.encode(newPassword));
   }
 }

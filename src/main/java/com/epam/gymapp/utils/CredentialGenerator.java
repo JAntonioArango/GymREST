@@ -3,17 +3,15 @@ package com.epam.gymapp.utils;
 import com.epam.gymapp.repositories.UserRepository;
 import java.util.Locale;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CredentialGenerator {
 
   private final UserRepository userRepository;
-
-  public CredentialGenerator(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   public String randomPassword() {
     return RandomStringUtils.randomAlphanumeric(10);

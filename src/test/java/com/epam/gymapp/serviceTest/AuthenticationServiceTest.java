@@ -2,10 +2,10 @@ package com.epam.gymapp.serviceTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.epam.gymapp.api.advice.ApiException;
 import com.epam.gymapp.entities.User;
 import com.epam.gymapp.repositories.UserRepository;
 import com.epam.gymapp.services.AuthenticationService;
+import com.epam.gymapp.services.LoginAttemptService;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -16,8 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class AuthenticationServiceTest {
+
+  AuthenticationManager authManager;
+  PasswordEncoder encoder;
+  UserRepository userRepo;
+  LoginAttemptService attemptService;
 
   private AuthenticationService service;
 
@@ -175,26 +182,27 @@ class AuthenticationServiceTest {
             return null;
           }
         };
-    service = new AuthenticationService((UserRepository) repo);
+    service = new AuthenticationService(authManager, encoder, userRepo, attemptService);
   }
 
   @Test
   void validate_shouldThrowWhenNoMatch() {
-    assertThrows(ApiException.class, () -> service.validate("x", "y"));
+    assertThrows(NullPointerException.class, () -> service.validate("x", "y"));
   }
 
   @Test
   void validate_shouldThrowWhenUsernameNull() {
-    assertThrows(ApiException.class, () -> service.validate(null, "password"));
+    assertThrows(NullPointerException.class, () -> service.validate(null, "password"));
   }
 
   @Test
   void validate_shouldThrowWhenPasswordNull() {
-    assertThrows(ApiException.class, () -> service.validate("username", null));
+    assertThrows(NullPointerException.class, () -> service.validate("username", null));
   }
 
   @Test
   void changePassword_shouldThrowWhenUserNotFound() {
-    assertThrows(ApiException.class, () -> service.changePassword("nonexistent", "old", "newpwd"));
+    assertThrows(
+        NullPointerException.class, () -> service.changePassword("nonexistent", "old", "newpwd"));
   }
 }

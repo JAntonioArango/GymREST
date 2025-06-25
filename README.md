@@ -1,7 +1,9 @@
 # 💠 GYM TASK APPLICATION – REST EDITION 💠
 
 
-The **Gym Task** project is a robust Spring Boot + Hibernate REST API application. It manages Trainers, Trainees, bi-directional Trainer ↔ Trainee assignments, Trainings, authentication, profile lifecycle, error handling, documentation with Swagger, and more, ensuring security, transaction management, and comprehensive validation.
+The **Gym Task** project is a robust Spring Boot + Hibernate REST API application. <br>
+It manages Trainers, Trainees, bi-directional Trainer ↔ Trainee assignments, Trainings, authentication, profile lifecycle, error handling, documentation with Swagger, and more. <br>
+Ensuring security, transaction management, and comprehensive validation.
 
 ---
 
@@ -46,6 +48,14 @@ The **Gym Task** project is a robust Spring Boot + Hibernate REST API applicatio
 | `DB_USERNAME` | `gymuser` | DB username |
 | `DB_PASSWORD` | *(none)* | DB password |
 
+---
+
+## 🚀 How to Run the App 🚀
+
+### Command Line
+
+| `docker compose up -d --build app`                          |
+|------------------------------------|
 
 
 
