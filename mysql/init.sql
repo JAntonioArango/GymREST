@@ -69,3 +69,8 @@ INSERT IGNORE INTO trainers (id, specialization_id, user_id)
 VALUES (1, 4 /*YOGA*/, 1);
 
 INSERT IGNORE INTO trainee_trainer (trainee_id, trainer_id) VALUES (1,1);
+
+CREATE TABLE revoked_token (
+                               token       VARCHAR(512) PRIMARY KEY,
+                               expires_at  TIMESTAMP NOT NULL
+);

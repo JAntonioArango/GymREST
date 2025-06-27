@@ -5,10 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
   private final JwtEncoder encoder;
+  private final JwtDecoder decoder;
   private final JwtConfig jwtConfig;
 
   public String createToken(String username) {
@@ -33,5 +31,9 @@ public class JwtService {
     JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
     return encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+  }
+
+  public Jwt parse(String token) {
+    return decoder.decode(token);
   }
 }

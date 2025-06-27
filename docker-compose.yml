@@ -19,6 +19,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      prometheus:
+        condition: service_started
+      grafana:
+        condition: service_started
+      sonarqube:
+        condition: service_started
+
     ports:
       - "8080:8080"
     env_file:
@@ -56,10 +63,6 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - "9090:9090"
-    depends_on:
-      app:
-        condition: service_started
-
 
   grafana:
     image: grafana/grafana:11.0.0

@@ -10,14 +10,14 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:gympass}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    # If MySQL comes up a few seconds late, don't fail-fast:
     hikari:
       initialization-fail-timeout: 0
       connection-timeout: 30000
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
@@ -69,6 +69,7 @@ management:
           - health
           - prometheus
           - metrics
+          - info
   endpoint:
     health:
       show-details: always
@@ -76,9 +77,3 @@ management:
       enabled: true
     metrics:
       enabled: true
-      export:
-        prometheus:
-          enabled: true
-
-
-
