@@ -46,13 +46,18 @@ public class TrainingService {
             trainer.getSpecialization(),
             dto.trainingName(),
             dto.date(),
-            dto.duration());
+            dto.duration(),
+                dto.activeSession());
 
     trainingRepo.save(tr);
   }
 
   public Page<TraineeTrainingDto> traineeTrainings(
       String traineeUsername, TrainingFilter f, Pageable pageable) {
+
+    traineeRepo
+        .findByUserUsername(traineeUsername)
+        .orElseThrow(() -> ApiException.notFound("Trainee", traineeUsername));
 
     TrainingFilter filter = Optional.ofNullable(f).orElse(TrainingFilter.EMPTY);
 
@@ -115,11 +120,16 @@ public class TrainingService {
         t.getTrainingType().getName(),
         t.getTrainingName(),
         t.getTrainingDate(),
-        t.getTrainingDuration());
+        t.getTrainingDuration(),
+            t.getActiveSession());
   }
 
   public Page<TrainerTrainingDto> trainerTrainings(
       String trainerUsername, TrainingFilter f, Pageable pageable) {
+
+    trainerRepo
+        .findByUserUsername(trainerUsername)
+        .orElseThrow(() -> ApiException.notFound("Trainer", trainerUsername));
 
     TrainingFilter filter = Optional.ofNullable(f).orElse(TrainingFilter.EMPTY);
 

@@ -6,10 +6,10 @@ import com.epam.gymapp.entities.RevokedToken;
 import com.epam.gymapp.repositories.RevokedTokenRepo;
 import com.epam.gymapp.services.AuthenticationService;
 import com.epam.gymapp.services.JwtService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,10 @@ public class AuthController {
   private final JwtService jwtService;
   private final RevokedTokenRepo repo;
 
+  @Timed(
+          value = "login.duration",
+          description = "Time spent on login",
+          histogram = true)
   @GetMapping("/login")
   @Operation(summary = "Login (3)")
   public ResponseEntity<TokenDto> login(
@@ -52,7 +56,9 @@ public class AuthController {
   @PutMapping("/{username}/password")
   @Operation(summary = "Change Password (4)")
   public ResponseEntity<Void> changePassword(
-      @PathVariable String username, @Valid @RequestBody ChangePasswordDto body) {
+      @PathVariable String username, @RequestBody ChangePasswordDto body) {
+
+    authService.validate(username, body.oldPassword());
 
     authService.changePassword(username, body.oldPassword(), body.newPassword());
     return ResponseEntity.ok().build();

@@ -48,9 +48,6 @@ public class AuthenticationService {
             .findByUsername(username)
             .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
 
-    if (!encoder.matches(oldPassword, user.getPassword())) {
-      throw ApiException.badCredentials();
-    }
     user.setPassword(encoder.encode(newPassword));
   }
 }

@@ -1,8 +1,6 @@
 package com.epam.gymapp.api.controllers;
 
-import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
-import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +25,7 @@ public class TrainingController {
   @PostMapping("/add")
   @Operation(summary = "Add Training (14)")
   public ResponseEntity<Void> add(
-      @Valid @RequestBody CreateTrainingDto body, @AuthenticatedUser User caller) {
+      @Valid @RequestBody CreateTrainingDto body) {
 
     service.addTraining(body);
 
@@ -43,8 +41,7 @@ public class TrainingController {
       @RequestParam(required = false) String trainerName,
       @RequestParam(required = false) String trainingType,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      @AuthenticatedUser User caller) {
+      @RequestParam(defaultValue = "20") int size) {
 
     var filter = new TrainingService.TrainingFilter(from, to, trainerName, null, trainingType);
 
@@ -62,8 +59,7 @@ public class TrainingController {
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
       @RequestParam(required = false) String traineeName,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      @AuthenticatedUser User caller) {
+      @RequestParam(defaultValue = "20") int size) {
 
     var filter = new TrainingService.TrainingFilter(from, to, null, traineeName, null);
 
@@ -75,7 +71,7 @@ public class TrainingController {
 
   @GetMapping("/types")
   @Operation(summary = "Get Training Types (17)")
-  public ResponseEntity<List<TrainingTypeDto>> listTypes(@AuthenticatedUser User caller) {
+  public ResponseEntity<List<TrainingTypeDto>> listTypes() {
 
     List<TrainingTypeDto> types = service.listTrainingTypes();
 

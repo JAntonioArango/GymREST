@@ -18,7 +18,9 @@ public class CredentialGenerator {
   }
 
   public String buildUniqueUsername(String first, String last) {
-    String base = (first + "." + last).toLowerCase(Locale.ROOT);
+    String base = (first + "." + last)
+            .toLowerCase(Locale.ROOT)
+            .replaceAll("\\s", "." );
 
     String candidate;
     do {

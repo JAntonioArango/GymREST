@@ -41,7 +41,7 @@ class TrainingServiceUnitTest {
   @BeforeEach
   void setUp() {
     createDto =
-        new CreateTrainingDto("traineeUser", "trainerUser", "YOGA", LocalDate.of(2025, 5, 1), 45);
+        new CreateTrainingDto("traineeUser", "trainerUser", "YOGA", LocalDate.of(2025, 5, 1), 45, true);
 
     User traineeUser = new User();
     traineeUser.setUsername("traineeUser");
@@ -96,7 +96,7 @@ class TrainingServiceUnitTest {
   @Test
   void listByTrainer_shouldMapEntitiesToDto() {
     Training one =
-        new Training(1L, mockTrainee, mockTrainer, mockType, "name1", LocalDate.now(), 30);
+        new Training(1L, mockTrainee, mockTrainer, mockType, "name1", LocalDate.now(), 30, true);
     when(trainingRepo.findByTrainerUserUsername("trainerUser")).thenReturn(List.of(one));
 
     List<TrainingDto> dtos = service.listByTrainer("trainerUser");
@@ -113,7 +113,7 @@ class TrainingServiceUnitTest {
   @Test
   void listByTrainee_shouldInvokeRepoAndReturnDtos() {
     TrainingDto td =
-        new TrainingDto(2L, "u", "t", "f", "l", Specialization.CARDIO, "n", LocalDate.now(), 20);
+        new TrainingDto(2L, "u", "t", "f", "l", Specialization.CARDIO, "n", LocalDate.now(), 20, true);
     when(trainingRepo.findTraineeTrainingsJPQL(eq("u"), any(), any(), any(), any()))
         .thenReturn(List.of(td));
 

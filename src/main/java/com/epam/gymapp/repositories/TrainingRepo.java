@@ -30,7 +30,8 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                      t.trainingType.name,
                      t.trainingName,
                      t.trainingDate,
-                     t.trainingDuration)
+                     t.trainingDuration,
+                     t.activeSession)
            FROM  Training t
            WHERE t.trainee.user.username = :traineeUsername
              AND (:fromDate  IS NULL OR t.trainingDate >= :fromDate)
@@ -60,7 +61,8 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
                      t.trainingType.name,
                      t.trainingName,
                      t.trainingDate,
-                     t.trainingDuration)
+                     t.trainingDuration,
+                     t.activeSession)
              FROM Training t
             WHERE t.trainer.user.username = :trainerUsername
               AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)

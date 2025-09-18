@@ -42,7 +42,7 @@ class TrainingEntityTest {
   @Test
   void testAllArgsConstructor() {
     Training training =
-        new Training(1L, trainee, trainer, trainingType, "Test Training", testDate, 60);
+        new Training(1L, trainee, trainer, trainingType, "Test Training", testDate, 60, true);
 
     assertEquals(1L, training.getId());
     assertEquals(trainee, training.getTrainee());
@@ -113,7 +113,7 @@ class TrainingEntityTest {
   @Test
   void testRequiredFieldsNotNull() {
     Training fullTraining =
-        new Training(1L, trainee, trainer, trainingType, "Test Training", testDate, 60);
+        new Training(1L, trainee, trainer, trainingType, "Test Training", testDate, 60, true);
 
     assertNotNull(fullTraining.getTrainee(), "Trainee should not be null");
     assertNotNull(fullTraining.getTrainer(), "Trainer should not be null");
@@ -123,11 +123,11 @@ class TrainingEntityTest {
   @Test
   void testContentEquality() {
     Training training1 =
-        new Training(1L, trainee, trainer, trainingType, "Training 1", testDate, 60);
+        new Training(1L, trainee, trainer, trainingType, "Training 1", testDate, 60, true);
     Training training2 =
-        new Training(1L, trainee, trainer, trainingType, "Training 1", testDate, 60);
+        new Training(1L, trainee, trainer, trainingType, "Training 1", testDate, 60, true);
     Training training3 =
-        new Training(2L, trainee, trainer, trainingType, "Training 2", testDate, 45);
+        new Training(2L, trainee, trainer, trainingType, "Training 2", testDate, 45, true);
 
     assertThat(training1).usingRecursiveComparison().isEqualTo(training2);
 

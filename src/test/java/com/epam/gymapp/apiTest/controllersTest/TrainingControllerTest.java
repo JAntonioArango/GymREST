@@ -36,9 +36,9 @@ class TrainingControllerTest {
 
     CreateTrainingDto createTrainingDto =
         new CreateTrainingDto(
-            "Daniela.Lopez123", "Sara.Maria123", "STRENGTH", LocalDate.of(2025, 5, 22), 15);
+            "Daniela.Lopez123", "Sara.Maria123", "STRENGTH", LocalDate.of(2025, 5, 22), 15, true);
 
-    ResponseEntity<Void> response = trainingController.add(createTrainingDto, mockUser);
+    ResponseEntity<Void> response = trainingController.add(createTrainingDto);
 
     verify(trainingService).addTraining(createTrainingDto);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -70,7 +70,7 @@ class TrainingControllerTest {
 
     ResponseEntity<List<TraineeTrainingDto>> result =
         trainingController.traineeTrainings(
-            username, from, to, trainerName, trainingType, page, size, mockUser);
+            username, from, to, trainerName, trainingType, page, size);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -101,7 +101,7 @@ class TrainingControllerTest {
         .thenReturn(trainingPage);
 
     ResponseEntity<List<TrainerTrainingDto>> result =
-        trainingController.trainerTrainings(username, from, to, traineeName, page, size, mockUser);
+        trainingController.trainerTrainings(username, from, to, traineeName, page, size);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -118,7 +118,7 @@ class TrainingControllerTest {
     List<TrainingTypeDto> types = List.of(/* initialize with test data */ );
     when(trainingService.listTrainingTypes()).thenReturn(types);
 
-    ResponseEntity<List<TrainingTypeDto>> result = trainingController.listTypes(mockUser);
+    ResponseEntity<List<TrainingTypeDto>> result = trainingController.listTypes();
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());

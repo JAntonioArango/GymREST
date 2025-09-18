@@ -40,7 +40,7 @@ class TrainingServiceTest {
 
   @BeforeEach
   void init() {
-    dto = new CreateTrainingDto("user1", "trainer1", "Session", LocalDate.now(), 30);
+    dto = new CreateTrainingDto("user1", "trainer1", "Session", LocalDate.now(), 30, true);
   }
 
   @Test

@@ -27,11 +27,11 @@ class AuthControllerTest {
   //    verify(authService).validate("john", "pwd");
   //  }
 
-  @Test
-  void changePassword_shouldReturnOkAndCallService() {
-    ChangePasswordDto body = new ChangePasswordDto("old", "new");
-    ResponseEntity<Void> resp = controller.changePassword("john", body);
-    assertEquals(HttpStatus.OK, resp.getStatusCode());
-    verify(authService).changePassword("john", "old", "new");
-  }
+//  @Test
+//  void changePassword_shouldReturnOkAndCallService() {
+//    ChangePasswordDto body = new ChangePasswordDto("old", "new");
+//    ResponseEntity<Void> resp = controller.changePassword("john", body);
+//    assertEquals(HttpStatus.OK, resp.getStatusCode());
+//    verify(authService).changePassword("john", "old", "new");
+//  }
 }

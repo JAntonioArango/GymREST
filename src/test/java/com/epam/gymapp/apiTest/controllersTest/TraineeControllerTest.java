@@ -54,14 +54,14 @@ class TraineeControllerTest {
 
   @Test
   void delete_shouldInvokeServiceAndReturnOK() {
-    ResponseEntity<Void> resp = controller.delete("john", caller);
+    ResponseEntity<Void> resp = controller.delete("john");
     assertEquals(HttpStatus.OK, resp.getStatusCode());
     verify(traineeService).deleteByUsername("john");
   }
 
   @Test
   void setActive_shouldCallServiceAndReturnOK() {
-    ResponseEntity<Void> resp = controller.setActive("john", true, caller);
+    ResponseEntity<Void> resp = controller.setActive("john", true);
     assertEquals(HttpStatus.OK, resp.getStatusCode());
     verify(traineeService).setActive("john", true);
   }
@@ -74,7 +74,7 @@ class TraineeControllerTest {
         List.of(new TrainerShortDto("sara.maria", "Sara", "Maria", Specialization.BOXING));
     when(traineeService.replaceTrainers("john", trainerUsernames)).thenReturn(trainers);
 
-    ResponseEntity<List<TrainerShortDto>> resp = controller.replaceTrainers("john", body, caller);
+    ResponseEntity<List<TrainerShortDto>> resp = controller.replaceTrainers("john", body);
     assertEquals(trainers, resp.getBody());
     verify(traineeService).replaceTrainers("john", trainerUsernames);
   }
@@ -85,7 +85,7 @@ class TraineeControllerTest {
         List.of(new TraineeDto("john", "John", "Doe", LocalDate.of(1990, 1, 1), "Address", true));
     when(traineeService.list(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(dtos));
 
-    ResponseEntity<List<TraineeDto>> resp = controller.list(0, 20, caller);
+    ResponseEntity<List<TraineeDto>> resp = controller.list(0, 20);
 
     assertEquals(dtos, resp.getBody());
   }

@@ -1,8 +1,6 @@
 package com.epam.gymapp.api.controllers;
 
-import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
-import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TraineeService;
 import com.epam.gymapp.services.TrainerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +22,7 @@ public class TraineeController {
   private final TraineeService traineeService;
   private final TrainerService trainerService;
 
+
   @PostMapping("/register")
   @Operation(summary = "Trainee Registration (1)")
   public ResponseEntity<TraineeRegistrationDto> create(@Valid @RequestBody CreateTraineeDto body) {
@@ -35,7 +34,7 @@ public class TraineeController {
 
   @GetMapping("/{username}")
   @Operation(summary = "Get trainee profile (5)")
-  public TraineeProfileDto get(@PathVariable String username, @AuthenticatedUser User caller) {
+  public TraineeProfileDto get(@PathVariable String username) {
 
     return traineeService.findProfile(username);
   }
@@ -43,7 +42,7 @@ public class TraineeController {
   @GetMapping("/{username}/unassigned-trainers")
   @Operation(summary = "Get not assigned on trainee active trainers (10)")
   public ResponseEntity<List<TrainerShortDto>> unassignedActiveTrainers(
-      @PathVariable String username, @AuthenticatedUser User caller) {
+      @PathVariable String username) {
 
     return ResponseEntity.ok(trainerService.unassignedActiveTrainers(username));
   }
@@ -52,8 +51,7 @@ public class TraineeController {
   @Operation(summary = "List trainees (paged)")
   public ResponseEntity<List<TraineeDto>> list(
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      @AuthenticatedUser User caller) {
+      @RequestParam(defaultValue = "20") int size) {
 
     return ResponseEntity.ok(traineeService.list(PageRequest.of(page, size)).getContent());
   }
@@ -62,8 +60,7 @@ public class TraineeController {
   @Operation(summary = "Update trainee profile (6)")
   public TraineeProfileDto updateProfile(
       @PathVariable String username,
-      @Valid @RequestBody UpdateTraineeDto body,
-      @AuthenticatedUser User caller) {
+      @Valid @RequestBody UpdateTraineeDto body) {
 
     return traineeService.updateProfile(username, body);
   }
@@ -72,8 +69,7 @@ public class TraineeController {
   @Operation(summary = "Update Trainee's Trainer List (11)")
   public ResponseEntity<List<TrainerShortDto>> replaceTrainers(
       @PathVariable String username,
-      @Valid @RequestBody UpdateTraineeTrainersDto body,
-      @AuthenticatedUser User caller) {
+      @Valid @RequestBody UpdateTraineeTrainersDto body) {
 
     List<TrainerShortDto> out = traineeService.replaceTrainers(username, body.trainers());
 
@@ -83,7 +79,7 @@ public class TraineeController {
   @DeleteMapping("/{username}")
   @Operation(summary = "Delete trainee profile (7)")
   public ResponseEntity<Void> delete(
-      @PathVariable String username, @AuthenticatedUser User caller) {
+      @PathVariable String username) {
 
     traineeService.deleteByUsername(username);
     return ResponseEntity.ok().build();
@@ -92,7 +88,7 @@ public class TraineeController {
   @PatchMapping("/{username}/active")
   @Operation(summary = "Activate/De-Activate Trainee (15)")
   public ResponseEntity<Void> setActive(
-      @PathVariable String username, @RequestParam boolean active, @AuthenticatedUser User caller) {
+      @PathVariable String username, @RequestParam boolean active) {
 
     traineeService.setActive(username, active);
     return ResponseEntity.ok().build();

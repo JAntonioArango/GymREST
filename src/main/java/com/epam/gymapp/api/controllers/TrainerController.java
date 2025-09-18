@@ -1,8 +1,6 @@
 package com.epam.gymapp.api.controllers;
 
-import com.epam.gymapp.api.auth.AuthenticatedUser;
 import com.epam.gymapp.api.dto.*;
-import com.epam.gymapp.entities.User;
 import com.epam.gymapp.services.TrainerService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +34,7 @@ public class TrainerController {
   @GetMapping("/{username}")
   @Operation(summary = "Get trainer profile (8)")
   public TrainerProfileDto getProfile(
-      @PathVariable String username, @AuthenticatedUser User caller) {
+      @PathVariable String username) {
 
     return trainerService.findProfile(username);
   }
@@ -45,8 +43,7 @@ public class TrainerController {
   @Operation(summary = "Update trainer profile (9)")
   public TrainerProfileDto updateProfile(
       @PathVariable String username,
-      @Valid @RequestBody UpdateTrainerDto body,
-      @AuthenticatedUser User caller) {
+      @Valid @RequestBody UpdateTrainerDto body) {
 
     return trainerService.updateProfile(username, body);
   }
@@ -54,7 +51,7 @@ public class TrainerController {
   @PatchMapping("/{username}/active")
   @Operation(summary = "Activate/De-Activate Trainer (16)")
   public ResponseEntity<Void> setActive(
-      @PathVariable String username, @RequestParam boolean active, @AuthenticatedUser User caller) {
+      @PathVariable String username, @RequestParam boolean active) {
 
     trainerService.setActive(username, active);
     return ResponseEntity.ok().build();

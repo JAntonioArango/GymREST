@@ -5,6 +5,8 @@ import jakarta.annotation.PostConstruct;
 import java.util.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +18,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 @Configuration
 public class JwtConfig {
 
-  @Value("${JWT_SECRET:}")
+  @Value("${jwt.secret}")
   private String secretB64;
 
-  @Value("${JWT_EXPIRES_MINUTES:15}")
+  @Getter
+  @Value("${jwt.expiration}")
   private int expiresMinutes;
 
   @PostConstruct
@@ -48,9 +51,5 @@ public class JwtConfig {
   @Bean
   public JwtEncoder jwtEncoder() {
     return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey()));
-  }
-
-  public int getExpiresMinutes() {
-    return expiresMinutes;
   }
 }

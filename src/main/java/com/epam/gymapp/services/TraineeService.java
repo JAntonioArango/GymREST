@@ -29,11 +29,6 @@ public class TraineeService {
 
   public TraineeRegistrationDto register(CreateTraineeDto dto) {
 
-    if (trainerRepo.existsByUserFirstNameAndUserLastName(dto.firstName(), dto.lastName())) {
-      throw ApiException.badRequest(
-          "Cannot register as trainee; a trainer with the same name already exists");
-    }
-
     String rawPwd = creds.randomPassword();
 
     Trainee trainee = buildAndSaveEntity(dto, rawPwd);
@@ -69,20 +64,33 @@ public class TraineeService {
 
   public TraineeProfileDto updateProfile(String username, UpdateTraineeDto dto) {
 
-    Trainee t =
+    Trainee trainee =
         traineeRepo
             .findByUserUsername(username)
             .orElseThrow(() -> ApiException.notFound("Trainee", username));
 
-    t.getUser().setFirstName(dto.firstName());
-    t.getUser().setLastName(dto.lastName());
+    traineeRepo.findByUserUsername(dto.username()).ifPresent(
+            t -> {
+              if (!trainee.getId().equals(trainee.getId())) {
+                try {
+                  throw ApiException.duplicate("Username", dto.username());
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              }
+            });
 
-    if (dto.dateOfBirth() != null) t.setDateOfBirth(dto.dateOfBirth());
-    if (dto.address() != null) t.setAddress(dto.address());
+    trainee.getUser().setUsername(dto.username().replaceAll("\\s", "." ));
 
-    t.getUser().setActive(dto.isActive());
+    trainee.getUser().setFirstName(dto.firstName());
+    trainee.getUser().setLastName(dto.lastName());
 
-    return toProfileDto(t);
+    if (dto.dateOfBirth() != null) trainee.setDateOfBirth(dto.dateOfBirth());
+    if (dto.address() != null) trainee.setAddress(dto.address());
+
+    trainee.getUser().setActive(dto.isActive());
+
+    return toProfileDto(trainee);
   }
 
   @Transactional

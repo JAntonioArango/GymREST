@@ -47,6 +47,10 @@ public class TrainerService {
     Trainer t = new Trainer();
     t.setUser(u);
 
+    TrainingType type = typeRepo.findByName(dto.specialization())
+                    .orElseThrow(() -> ApiException.notFound("Training type", dto.specialization().name()));
+
+    t.setSpecialization(type);
     trainerRepo.save(t);
 
     return new TrainerRegistrationDto(username, rawPassword);
@@ -92,6 +96,18 @@ public class TrainerService {
             .findByUserUsername(username)
             .orElseThrow(() -> ApiException.notFound("Trainer", username));
 
+    trainerRepo.findByUserUsername(dto.username()).ifPresent(
+        t -> {
+          if (!t.getId().equals(trainer.getId())) {
+              try {
+                  throw ApiException.duplicate("Username", dto.username());
+              } catch (Exception e) {
+                  throw new RuntimeException(e);
+              }
+          }
+        });
+
+    trainer.getUser().setUsername(dto.username().replaceAll("\\s", "." ));
     trainer.getUser().setFirstName(dto.firstName());
     trainer.getUser().setLastName(dto.lastName());
     trainer.getUser().setActive(dto.isActive());
@@ -169,6 +185,9 @@ public class TrainerService {
   }
 
   public List<TrainerShortDto> unassignedActiveTrainers(String traineeUsername) {
+    traineeRepo
+        .findByUserUsername(traineeUsername)
+        .orElseThrow(() -> ApiException.notFound("Trainee", traineeUsername));
 
     Set<Long> assignedIds =
         trainerRepo.findByTraineesUserUsername(traineeUsername).stream()

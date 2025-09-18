@@ -1,5 +1,6 @@
 package com.epam.gymapp.api.advice;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 
 public class ApiException extends RuntimeException {
@@ -9,6 +10,10 @@ public class ApiException extends RuntimeException {
   public ApiException(HttpStatus status, String message) {
     super(message);
     this.status = status;
+  }
+
+  public static Exception duplicate(String message, @NotBlank String username) {
+    return new ApiException(HttpStatus.CONFLICT, message + ": " + username + " already exists");
   }
 
   public HttpStatus getStatus() {

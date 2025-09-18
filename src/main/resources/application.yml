@@ -1,28 +1,39 @@
+# application.yml
 spring:
   config:
     import: optional:dotenv:.env
   application:
     name: GymTaskREST
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 2000
+            readTimeout: 3000
+
+
   datasource:
-    url:      ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://db:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:gymuser}
-    password: ${SPRING_DATASOURCE_PASSWORD:gympass}
+    password: ${SPRING_DATASOURCE_PASSWORD:YourStrongPwd}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     hikari:
-      initialization-fail-timeout: 0
+      initialization-fail-timeout: 60000
       connection-timeout: 30000
 
   jpa:
+    database: MYSQL
     hibernate:
       ddl-auto: update
     show-sql: true
     open-in-view: false
     properties:
       hibernate:
-        default_schema: gymdb
         format_sql: true
+
   sql:
     init:
       mode: never
@@ -77,3 +88,47 @@ management:
       enabled: true
     metrics:
       enabled: true
+
+
+jwt:
+  secret: ${JWT_SECRET:dGhpc2lzYXNlY3JldGtleWZvcnRlc3Rpbmdwb3Vwb3Nlc29ubHl9}
+  expiration: ${JWT_EXPIRES_MINUTES:30}
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://eureka-server:8761/eureka}
+  instance:
+    prefer-ip-address: true
+    hostname: ${HOSTNAME:app}
+
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      MICROSERVICE-TASK:
+        connectTimeout: 2000
+        readTimeout: 3000
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        slowCallRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+    instances:
+      MICROSERVICE-TASK:
+        baseConfig: default

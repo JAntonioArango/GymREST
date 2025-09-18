@@ -46,10 +46,17 @@ Ensuring security, transaction management, and comprehensive validation.
 
 ## 🌐 URLS 🌐
 
-http://localhost:8080/swagger-ui/index.html#/ <br>
-http://localhost:9090 <br>
-http://localhost:3000 <br>
-http://localhost:9000 <br>
+Your App: http://localhost:8080 <br>
+
+Eureka Dashboard: http://localhost:8762 <br>
+
+Swagger UI: http://localhost:8080/swagger-ui/index.html <br>
+
+Prometheus: http://localhost:9090 <br>
+
+Grafana: http://localhost:3000 <br>
+
+SonarQube: http://localhost:9000 <br>
 
 ---
 

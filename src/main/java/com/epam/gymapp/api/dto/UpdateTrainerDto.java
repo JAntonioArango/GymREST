@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateTrainerDto(
+        @Schema(example = "SaraTr") @NotBlank String username,
     @Schema(example = "Sara") @NotBlank String firstName,
     @Schema(example = "Maria") @NotBlank String lastName,
     @Schema(example = "BOXING") Specialization specialization,

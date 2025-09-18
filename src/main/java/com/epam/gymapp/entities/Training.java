@@ -36,4 +36,6 @@ public class Training {
   private LocalDate trainingDate;
 
   @Column private Integer trainingDuration;
+
+  @Column private Boolean activeSession;
 }
