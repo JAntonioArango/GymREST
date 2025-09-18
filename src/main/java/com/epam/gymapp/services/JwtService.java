@@ -21,7 +21,7 @@ public class JwtService {
   public String createToken(String username) {
     Instant now = Instant.now();
     Instant expiresAt = now.plus(Duration.ofMinutes(jwtConfig.getExpiresMinutes()));
-    
+
     log.debug("JWT created at: {}, expires at: {}", now, expiresAt);
 
     JwtClaimsSet claims =

@@ -26,10 +26,7 @@ public class AuthController {
   private final JwtService jwtService;
   private final RevokedTokenRepo repo;
 
-  @Timed(
-          value = "login.duration",
-          description = "Time spent on login",
-          histogram = true)
+  @Timed(value = "login.duration", description = "Time spent on login", histogram = true)
   @GetMapping("/login")
   @Operation(summary = "Login (3)")
   public ResponseEntity<TokenDto> login(

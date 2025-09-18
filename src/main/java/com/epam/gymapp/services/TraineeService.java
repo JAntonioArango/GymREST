@@ -69,7 +69,9 @@ public class TraineeService {
             .findByUserUsername(username)
             .orElseThrow(() -> ApiException.notFound("Trainee", username));
 
-    traineeRepo.findByUserUsername(dto.username()).ifPresent(
+    traineeRepo
+        .findByUserUsername(dto.username())
+        .ifPresent(
             t -> {
               if (!trainee.getId().equals(trainee.getId())) {
                 try {
@@ -80,7 +82,7 @@ public class TraineeService {
               }
             });
 
-    trainee.getUser().setUsername(dto.username().replaceAll("\\s", "." ));
+    trainee.getUser().setUsername(dto.username().replaceAll("\\s", "."));
 
     trainee.getUser().setFirstName(dto.firstName());
     trainee.getUser().setLastName(dto.lastName());

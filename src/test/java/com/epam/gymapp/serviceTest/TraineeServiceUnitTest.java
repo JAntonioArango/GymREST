@@ -47,7 +47,8 @@ class TraineeServiceUnitTest {
 
   @Test
   void updateProfile_shouldModifyAndReturnProfile() {
-    UpdateTraineeDto upd = new UpdateTraineeDto("AliceT","Alice", "Smith", null, "New Addr", false);
+    UpdateTraineeDto upd =
+        new UpdateTraineeDto("AliceT", "Alice", "Smith", null, "New Addr", false);
     Trainee t = new Trainee();
     User u = new User();
     u.setFirstName("Old");

@@ -41,7 +41,8 @@ class TrainingServiceUnitTest {
   @BeforeEach
   void setUp() {
     createDto =
-        new CreateTrainingDto("traineeUser", "trainerUser", "YOGA", LocalDate.of(2025, 5, 1), 45, true);
+        new CreateTrainingDto(
+            "traineeUser", "trainerUser", "YOGA", LocalDate.of(2025, 5, 1), 45, true);
 
     User traineeUser = new User();
     traineeUser.setUsername("traineeUser");
@@ -113,7 +114,8 @@ class TrainingServiceUnitTest {
   @Test
   void listByTrainee_shouldInvokeRepoAndReturnDtos() {
     TrainingDto td =
-        new TrainingDto(2L, "u", "t", "f", "l", Specialization.CARDIO, "n", LocalDate.now(), 20, true);
+        new TrainingDto(
+            2L, "u", "t", "f", "l", Specialization.CARDIO, "n", LocalDate.now(), 20, true);
     when(trainingRepo.findTraineeTrainingsJPQL(eq("u"), any(), any(), any(), any()))
         .thenReturn(List.of(td));
 

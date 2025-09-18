@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record UpdateTraineeDto(
-        @Schema(example = "SaraTe") @NotBlank String username,
+    @Schema(example = "SaraTe") @NotBlank String username,
     @Schema(example = "Sara") @NotBlank String firstName,
     @Schema(example = "Maria") @NotBlank String lastName,
     @Schema(example = "2025-05-02") LocalDate dateOfBirth,

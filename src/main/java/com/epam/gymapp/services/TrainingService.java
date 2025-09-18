@@ -47,7 +47,7 @@ public class TrainingService {
             dto.trainingName(),
             dto.date(),
             dto.duration(),
-                dto.activeSession());
+            dto.activeSession());
 
     trainingRepo.save(tr);
   }
@@ -121,7 +121,7 @@ public class TrainingService {
         t.getTrainingName(),
         t.getTrainingDate(),
         t.getTrainingDuration(),
-            t.getActiveSession());
+        t.getActiveSession());
   }
 
   public Page<TrainerTrainingDto> trainerTrainings(

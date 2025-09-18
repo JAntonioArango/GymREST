@@ -105,7 +105,7 @@ eureka:
 
 feign:
   circuitbreaker:
-    enabled: true
+    enabled: false
   client:
     config:
       MICROSERVICE-TASK:
@@ -130,5 +130,8 @@ resilience4j:
           - java.io.IOException
           - java.net.SocketTimeoutException
     instances:
-      MICROSERVICE-TASK:
+      workload-service:
         baseConfig: default
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s

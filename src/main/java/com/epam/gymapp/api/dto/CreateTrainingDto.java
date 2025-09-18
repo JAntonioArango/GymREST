@@ -12,5 +12,4 @@ public record CreateTrainingDto(
     @Schema(example = "STRENGTH") @NotBlank String trainingName,
     @Schema(example = "1990-05-02") @NotNull LocalDate date,
     @Schema(example = "15") @NotNull @Positive Integer duration, // minutes
-    @Schema(example = "true") boolean activeSession
-    ) {}
+    @Schema(example = "true") boolean activeSession) {}

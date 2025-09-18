@@ -22,7 +22,6 @@ public class TraineeController {
   private final TraineeService traineeService;
   private final TrainerService trainerService;
 
-
   @PostMapping("/register")
   @Operation(summary = "Trainee Registration (1)")
   public ResponseEntity<TraineeRegistrationDto> create(@Valid @RequestBody CreateTraineeDto body) {
@@ -50,8 +49,7 @@ public class TraineeController {
   @GetMapping
   @Operation(summary = "List trainees (paged)")
   public ResponseEntity<List<TraineeDto>> list(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size) {
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
 
     return ResponseEntity.ok(traineeService.list(PageRequest.of(page, size)).getContent());
   }
@@ -59,8 +57,7 @@ public class TraineeController {
   @PutMapping("/{username}")
   @Operation(summary = "Update trainee profile (6)")
   public TraineeProfileDto updateProfile(
-      @PathVariable String username,
-      @Valid @RequestBody UpdateTraineeDto body) {
+      @PathVariable String username, @Valid @RequestBody UpdateTraineeDto body) {
 
     return traineeService.updateProfile(username, body);
   }
@@ -68,8 +65,7 @@ public class TraineeController {
   @PutMapping("/{username}/trainers")
   @Operation(summary = "Update Trainee's Trainer List (11)")
   public ResponseEntity<List<TrainerShortDto>> replaceTrainers(
-      @PathVariable String username,
-      @Valid @RequestBody UpdateTraineeTrainersDto body) {
+      @PathVariable String username, @Valid @RequestBody UpdateTraineeTrainersDto body) {
 
     List<TrainerShortDto> out = traineeService.replaceTrainers(username, body.trainers());
 
@@ -78,8 +74,7 @@ public class TraineeController {
 
   @DeleteMapping("/{username}")
   @Operation(summary = "Delete trainee profile (7)")
-  public ResponseEntity<Void> delete(
-      @PathVariable String username) {
+  public ResponseEntity<Void> delete(@PathVariable String username) {
 
     traineeService.deleteByUsername(username);
     return ResponseEntity.ok().build();

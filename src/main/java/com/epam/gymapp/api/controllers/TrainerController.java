@@ -33,8 +33,7 @@ public class TrainerController {
 
   @GetMapping("/{username}")
   @Operation(summary = "Get trainer profile (8)")
-  public TrainerProfileDto getProfile(
-      @PathVariable String username) {
+  public TrainerProfileDto getProfile(@PathVariable String username) {
 
     return trainerService.findProfile(username);
   }
@@ -42,8 +41,7 @@ public class TrainerController {
   @PutMapping("/{username}")
   @Operation(summary = "Update trainer profile (9)")
   public TrainerProfileDto updateProfile(
-      @PathVariable String username,
-      @Valid @RequestBody UpdateTrainerDto body) {
+      @PathVariable String username, @Valid @RequestBody UpdateTrainerDto body) {
 
     return trainerService.updateProfile(username, body);
   }

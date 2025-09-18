@@ -12,4 +12,3 @@ public record TrainerWorkload(
     @Schema(example = "true") boolean active,
     @Schema(example = "2024-01-15T10:30:00.000Z") @NotNull Instant trainingDate,
     @Schema(example = "60") int trainingDuration) {}
-

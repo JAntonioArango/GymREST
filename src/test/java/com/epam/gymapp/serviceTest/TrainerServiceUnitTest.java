@@ -76,7 +76,8 @@ class TrainerServiceUnitTest {
 
   @Test
   void updateProfile_shouldModifyAndReturnProfile() {
-    UpdateTrainerDto upd = new UpdateTrainerDto("AliceTrainer", "Alice", "Smith", Specialization.BOXING, false);
+    UpdateTrainerDto upd =
+        new UpdateTrainerDto("AliceTrainer", "Alice", "Smith", Specialization.BOXING, false);
     savedTrainer.getUser().setFirstName("Old");
     savedTrainer.getUser().setLastName("Old");
     savedTrainer.getUser().setActive(true);
