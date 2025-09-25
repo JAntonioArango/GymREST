@@ -1,6 +1,5 @@
 package com.epam.gymapp.config;
 
-import com.epam.gymapp.api.advice.JwtLogoutHandler;
 import com.epam.gymapp.api.filter.RevocationFilter;
 import com.epam.gymapp.repositories.UserRepository;
 import java.util.*;
@@ -35,6 +34,17 @@ public class SecurityConfig {
   private final RevocationFilter revocationFilter;
   private final UserRepository userRepo;
 
+  private static final String[] PUBLIC_ENDPOINTS = {
+    "/api/v1/trainer/register",
+    "/api/v1/trainee/register", 
+    "/api/v1/auth/login",
+    "/ops/gym-health",
+    "/ops/metrics",
+    "/ops/prometheus/**",
+    "/swagger-ui/**",
+    "/v3/api-docs*/**"
+  };
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -58,38 +68,38 @@ public class SecurityConfig {
 
   @Bean
   @Transactional
-  public SecurityFilterChain filterChain(
-      HttpSecurity http, JwtDecoder jwtDecoder, JwtLogoutHandler jwtLogoutHandler)
-      throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http, JwtDecoder jwtDecoder)
+          throws Exception {
 
+    // Add custom filter
     http.addFilterBefore(revocationFilter, BearerTokenAuthenticationFilter.class);
 
-    http.csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers(
-                        "/api/v1/trainer/register",
-                        "/api/v1/trainee/register",
-                        "/api/v1/auth/login",
-                        "/ops/gym-health",
-                        "/ops/metrics",
-                        "/ops/prometheus/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs*/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-        .oauth2ResourceServer(
-            oauth2 ->
-                oauth2.jwt(
-                    jwt ->
-                        jwt.decoder(jwtDecoder)
-                            .jwtAuthenticationConverter(new UsernameSubConverter())))
-        .httpBasic(AbstractHttpConfigurer::disable);
+    // Configure security settings
+    configureSecurityDefaults(http);
+
+    // Configure authentication
+    configureAuthentication(http, jwtDecoder);
 
     return http.build();
+  }
+
+  private void configureSecurityDefaults(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .httpBasic(AbstractHttpConfigurer::disable);
+  }
+
+  private void configureAuthentication(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
+    http.authorizeHttpRequests(auth ->
+                    auth.requestMatchers(PUBLIC_ENDPOINTS)
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated())
+            .oauth2ResourceServer(oauth2 ->
+                    oauth2.jwt(jwt ->
+                            jwt.decoder(jwtDecoder)
+                                    .jwtAuthenticationConverter(new UsernameSubConverter())));
   }
 
   @Bean
@@ -113,15 +123,11 @@ public class SecurityConfig {
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
-
     CorsConfiguration cfg = new CorsConfiguration();
-
+    cfg.setAllowedOriginPatterns(List.of("*"));
     cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"));
-
     cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
     cfg.setAllowCredentials(true);
-
     cfg.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
