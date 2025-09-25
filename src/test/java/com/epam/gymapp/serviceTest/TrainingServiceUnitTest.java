@@ -79,22 +79,6 @@ class TrainingServiceUnitTest {
   }
 
   @Test
-  void traineeTrainings_withNullFilter_shouldUseEmptyAndReturnPage() {
-    PageImpl<TraineeTrainingDto> page =
-        new PageImpl<>(
-            List.of(new TraineeTrainingDto("n", LocalDate.now(), Specialization.CARDIO, 10, "tr")));
-    when(trainingRepo.findTraineeTrainingRows(
-            eq("user"), isNull(), isNull(), isNull(), isNull(), eq(PageRequest.of(0, 5))))
-        .thenReturn(page);
-
-    Page<TraineeTrainingDto> result = service.traineeTrainings("user", null, PageRequest.of(0, 5));
-
-    assertEquals(page, result);
-    verify(trainingRepo)
-        .findTraineeTrainingRows(anyString(), any(), any(), any(), any(), any(PageRequest.class));
-  }
-
-  @Test
   void listByTrainer_shouldMapEntitiesToDto() {
     Training one =
         new Training(1L, mockTrainee, mockTrainer, mockType, "name1", LocalDate.now(), 30, true);
@@ -103,7 +87,7 @@ class TrainingServiceUnitTest {
     List<TrainingDto> dtos = service.listByTrainer("trainerUser");
 
     assertThat(dtos).hasSize(1);
-    TrainingDto dto = dtos.get(0);
+    TrainingDto dto = dtos.getFirst();
     assertEquals(one.getId(), dto.id());
     assertEquals("traineeUser", dto.traineeUsername());
     assertEquals("trainerUser", dto.trainerUsername());
@@ -142,5 +126,26 @@ class TrainingServiceUnitTest {
     assertNull(f.trainerNameOrNull());
     assertEquals("name", f.traineeNameOrNull());
     assertNull(f.trainingTypeOrNull());
+  }
+
+  @Test
+  void trainerTrainings_nullFilter_usesEmptyAndReturnsPage() {
+    when(trainerRepo.findByUserUsername("trainer1")).thenReturn(Optional.of(mockTrainer));
+
+    List<TrainerTrainingDto> data =
+        List.of(
+            new TrainerTrainingDto("name", LocalDate.now(), Specialization.YOGA, 30, "trainee"));
+    Page<TrainerTrainingDto> page = new PageImpl<>(data);
+    PageRequest pageReq = PageRequest.of(0, 10);
+
+    when(trainingRepo.findTrainerTrainingRows(
+            eq("trainer1"), isNull(), isNull(), isNull(), eq(pageReq)))
+        .thenReturn(page);
+
+    Page<TrainerTrainingDto> result = service.trainerTrainings("trainer1", null, pageReq);
+
+    assertEquals(page, result);
+    verify(trainingRepo)
+        .findTrainerTrainingRows(eq("trainer1"), isNull(), isNull(), isNull(), eq(pageReq));
   }
 }

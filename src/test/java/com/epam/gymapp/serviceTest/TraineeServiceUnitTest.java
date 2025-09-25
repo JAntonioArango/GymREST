@@ -27,20 +27,13 @@ class TraineeServiceUnitTest {
   @Mock private TraineeRepo traineeRepo;
   @Mock private CredentialGenerator creds;
   @Mock private TrainerRepo trainerRepo;
-  @Mock private UserRepository userRepository;
   @Mock private PasswordEncoder encoder;
 
   @InjectMocks private TraineeService service;
 
-  private CreateTraineeDto createDto;
-  private User savedUser;
-  private Trainee savedTrainee;
-
   @BeforeEach
   void setUp() {
-    lenient() // <── add this
-        .when(encoder.encode(anyString()))
-        .thenReturn("$2a$hash");
+    lenient().when(encoder.encode(anyString())).thenReturn("$2a$hash");
 
     service = new TraineeService(traineeRepo, creds, trainerRepo, encoder);
   }
@@ -123,9 +116,18 @@ class TraineeServiceUnitTest {
 
   @Test
   void replaceTrainers_shouldThrowWhenMissing() {
-    Trainee t = new Trainee();
-    when(traineeRepo.findByUserUsername("u")).thenReturn(Optional.of(t));
-    when(trainerRepo.findByUserUsernameIn(List.of("a", "b"))).thenReturn(List.of());
-    assertThrows(ApiException.class, () -> service.replaceTrainers("u", List.of("a", "b")));
+    Trainee trainee = new Trainee();
+    when(traineeRepo.findByUserUsername("u")).thenReturn(Optional.of(trainee));
+
+    List<String> trainerUsernames = List.of("a", "b");
+    when(trainerRepo.findByUserUsernameIn(trainerUsernames)).thenReturn(List.of());
+
+    ApiException ex =
+        assertThrows(ApiException.class, () -> service.replaceTrainers("u", trainerUsernames));
+
+    // Verify the exception carries the expected semantics
+    assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, ex.getStatus());
+    assertTrue(ex.getMessage().contains("Trainer IDs"));
+    assertTrue(ex.getMessage().contains(String.join(",", trainerUsernames)));
   }
 }

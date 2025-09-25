@@ -9,15 +9,18 @@ import org.springframework.web.bind.annotation.*;
     path = "/api/workload/v1",
     fallback = WorkloadClientFallback.class)
 public interface WorkloadClient {
+
+  String MICROSERVICE_NAME = "MICROSERVICE-TASK";
+
   @PostMapping("/saveworkload")
-  @CircuitBreaker(name = "MICROSERVICE-TASK")
+  @CircuitBreaker(name = MICROSERVICE_NAME)
   TrainerWorkload save(@RequestBody TrainerWorkload body);
 
   @GetMapping("/summary/{username}")
-  @CircuitBreaker(name = "MICROSERVICE-TASK")
+  @CircuitBreaker(name = MICROSERVICE_NAME)
   TrainerWorkloadSummary summary(@PathVariable("username") String username);
 
   @DeleteMapping("/delete/{id}")
-  @CircuitBreaker(name = "MICROSERVICE-TASK")
+  @CircuitBreaker(name = MICROSERVICE_NAME)
   void delete(@PathVariable("id") Long id);
 }

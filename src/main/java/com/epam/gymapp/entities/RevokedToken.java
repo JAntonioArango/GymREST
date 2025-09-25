@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "revoked_token")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RevokedToken {
   @Id
-  @Column(length = 64, nullable = false)
+  @Column(length = 512, nullable = false)
   private String token;
 
-  @Column(name = "expires_at", nullable = false)
+  @Column(nullable = false)
   private Instant expiresAt;
 }

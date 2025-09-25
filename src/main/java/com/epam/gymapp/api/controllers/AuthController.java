@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +39,7 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<Void> logout(HttpServletRequest request, Authentication auth) {
+  public ResponseEntity<Void> logout(HttpServletRequest request) {
     String hdr = request.getHeader(HttpHeaders.AUTHORIZATION);
     String token = hdr.substring(7);
     var jwt = jwtService.parse(token);
@@ -57,7 +56,7 @@ public class AuthController {
 
     authService.validate(username, body.oldPassword());
 
-    authService.changePassword(username, body.oldPassword(), body.newPassword());
+    authService.changePassword(username, body.newPassword());
     return ResponseEntity.ok().build();
   }
 }

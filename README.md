@@ -1,50 +1,58 @@
-# 💠 GYM TASK APPLICATION – REST EDITION 💠
+# 🏋️ GYM TASK MICROSERVICES 🏋️
 
+A comprehensive microservices-based gym management system built with Spring Boot and Spring Cloud. </br>
+The application provides complete trainer and trainee management, training sessions, authentication, and monitoring capabilities across distributed services.
 
-The **Gym Task** project is a robust Spring Boot + Hibernate REST API application. <br>
-It manages Trainers, Trainees, bidirectional Trainer ↔ Trainee assignments, Trainings, authentication, profile lifecycle, error handling, documentation with Swagger, and more. <br>
-Ensuring security, transaction management, and comprehensive validation.
+## 🏗️ Architecture Overview
 
----
-
-## ✨ Key Features ✨
-
-| Area                              | Endpoints / Use-Cases                                                                                       |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Account Creation**              | Trainer & Trainee registration with **auto-generated, BCrypt-hashed credentials**                           |
-| **Authentication**                | Username + Password login → JWT issued · Change Password · **Brute-force protector** (3 fails → 5-min lock) |
-| **Logout / Token Revocation**     | `POST /api/v1/auth/logout` black-lists the JWT (token + exp stored in DB) so it can’t be reused             |
-| **Profile Management**            | Retrieve, update, activate/deactivate & delete profiles with validation and optimistic locking              |
-| **Training Management**           | CRUD trainings, list & filter by date-range, trainer/trainee name, and training type                        |
-| **Trainer ⇄ Trainee assignments** | List unassigned active trainers · Atomic update of trainee’s trainer list                                   |
-| **Monitoring & Health**           | Spring Actuator endpoints `/ops/prometheus`, `/ops/gym-health` exposed for Prometheus                       |
-| **REST & Exception Handling**     | Global exception handler, consistent RFC 7807 (Problem-Details) responses                                   |
-| **Documentation**                 | Swagger / OpenAPI with DTO validation examples & API metadata                                               |
-| **Testing & Coverage**            | JUnit 5, Mockito; JaCoCo gate ≥ 70 % (uploaded to SonarQube)                                                |
-| **Code Quality**                  | SonarQube static analysis; Spotless plugin with Google Java Format                                          |
-| **Logging**                       | Console logs, transaction-ID filter, detailed REST call logging                                             |
-| **Deployment**                    | Docker Compose stack: App, MySQL, Prometheus, Grafana, SonarQube – credentials via `.env`                   |
+This system follows a microservices architecture pattern with:
+- **Service Discovery** (Eureka)
+- **API Gateway** for routing and load balancing
+- **Distributed Configuration** management
+- **Circuit Breaker** patterns for resilience
+- **Centralized Monitoring** and observability
 
 ---
 
-## 🛠️ Tech Stack 🛠️
+## 🗝 Key Features 🗝
 
-| Layer             | Technology                                                                                                     |
-| ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| Runtime           | **Java 21**, **Spring Boot 3.2.x**                                                                             |
-| Security          | Spring Security 6 · OAuth2 Resource-Server (JWT) · BCrypt · Caffeine cache                                     |
-| Persistence       | Spring Data JPA / Hibernate 6 · **MySQL 8**                                                                    |
-| Monitoring        | Spring Boot **Actuator** · **Micrometer** · **Prometheus v2** · **Grafana 11** |
-| Build             | **Maven 3.9.x** (wrapper) · Dockerfile / Docker Compose                                                        |
-| Testing           | JUnit 5 · Mockito · Spring Boot Test · JaCoCo                                                                  |
-| Documentation     | **Swagger / OpenAPI 3.1** (springdoc-openapi)                                                                  |
-| Utilities         | Lombok · Jackson · Apache Commons Lang                                                                         |
-| Quality & Linting | SonarQube 10 · Spotless (google-java-format)                                                                   |
-
+| Area                              | Endpoints / Use-Cases                                                                                   |
+| --------------------------------- |---------------------------------------------------------------------------------------------------------|
+| **Account Creation**              | Trainer & Trainee registration with auto-generated, BCrypt-hashed credentials                           |
+| **Authentication**                | Username + Password login → JWT issued · Change Password · Brute-force protector (3 fails → 5-min lock) |
+| **Logout / Token Revocation**     | `POST /api/v1/auth/logout` black-lists the JWT (token + exp stored in DB) so it can't be reused         |
+| **Profile Management**            | Retrieve, update, activate/deactivate & delete profiles with validation and optimistic locking          |
+| **Training Management**           | CRUD trainings, list & filter by date-range, trainer/trainee name, and training type                    |
+| **Trainer ⇄ Trainee assignments** | List unassigned active trainers · Atomic update of trainee's trainer list                               |
+| **Monitoring & Health**           | Spring Actuator endpoints `/ops/prometheus`, `/ops/gym-health` exposed for Prometheus                   |
+| **REST & Exception Handling**     | Global exception handler, consistent RFC 7807 (Problem-Details) responses                               |
+| **Documentation**                 | Swagger / OpenAPI with DTO validation examples & API metadata                                           |
+| **Testing & Coverage**            | JUnit 5, Mockito; JaCoCo gate ≥ 80 % (uploaded to SonarQube)                                            |
+| **Code Quality**                  | SonarQube static analysis; Spotless plugin with Google Java Format                                      |
+| **Logging**                       | Console logs, transaction-ID filter, detailed REST call logging                                         |
+| **Microservices**                | Service Discovery (Eureka) · API Gateway · Config Server · Circuit Breakers                             |
+| **Deployment**                    | Docker Compose stack: App, MySQL, Prometheus, Grafana, SonarQube – credentials via `.env`               |
 
 ---
 
-## 🌐 URLS 🌐
+## ⚙ Tech Stack ⚙
+
+| Layer             | Technology                                                                |
+| ----------------- | ------------------------------------------------------------------------- |
+| **Runtime**          | Java 21, Spring Boot 3.4.x                                                |
+| **Microservices**    | Spring Cloud 2024.x** · Eureka** · Gateway · Config Server · Circuit Breaker |
+| **Security**         | Spring Security 6 · OAuth2 Resource-Server (JWT) · BCrypt · Caffeine cache |
+| **Persistence**       | Spring Data JPA / Hibernate 6 · MySQL 8**                                 |
+| **Monitoring**        | Spring Boot Actuator · Micrometer** · Prometheus v2** · Grafana 11       |
+| **Build**             | Maven 3.9.x** (wrapper) · Dockerfile / Docker Compose                     |
+| **Testing**           | JUnit 5 · Mockito · Spring Boot Test · JaCoCo                             |
+| **Documentation**     | Swagger / OpenAPI 3.1 (springdoc-openapi)                                 |
+| **Utilities**         | Lombok · Jackson · Apache Commons Lang                                    |
+| **Quality & Linting** | SonarQube 10 · Spotless (google-java-format)                              |
+
+---
+
+## 🔗 URLS 🔗
 
 Your App: http://localhost:8080 <br>
 
@@ -60,15 +68,57 @@ SonarQube: http://localhost:9000 <br>
 
 ---
 
-## 🚀 How to Run the App 🚀
+## 🚀 Quick Start
 
-### Command Line
+### Prerequisites
+- Docker & Docker Compose
+- Java 21+ (for local development)
+- Maven 3.9+ (for local development)
 
-| `docker compose up -d --build app`                          |
-|------------------------------------|
+### Run with Docker Compose
+```bash
+# Start all services
+docker compose up -d --build
 
+# Start specific service
+docker compose up -d --build app
 
+# View logs
+docker compose logs -f app
 
+# Stop services
+docker compose down
+```
+
+## 📊 Service Endpoints
+
+| Service | Port | Health Check |
+|---------|------|--------------|
+| Main App | 8080 | `/ops/gym-health` |
+| Eureka Server | 8762 | `/actuator/health` |
+| API Gateway | 8081 | `/actuator/health` |
+
+## 🔧 Configuration
+
+Services are configured via:
+- `application.yml` - Base configuration
+- `application-docker.yml` - Docker-specific overrides
+- `.env` - Environment variables for Docker Compose
+
+## 📈 Monitoring & Observability
+
+- **Metrics**: Micrometer + Prometheus integration
+- **Health Checks**: Spring Actuator endpoints
+- **Distributed Tracing**: Request correlation IDs
+- **Dashboards**: Grafana with pre-configured panels
+
+## 🧪 Testing
+
+```bash
+# Run tests with coverage and report
+mvn clean test
+
+```
 
 <style>
   h1 { color: rgba(0,178,255,0.9); }

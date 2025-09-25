@@ -41,7 +41,7 @@ public class AuthenticationService {
   }
 
   @Transactional
-  public void changePassword(String username, String oldPassword, String newPassword) {
+  public void changePassword(String username, String newPassword) {
 
     User user =
         userRepo

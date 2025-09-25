@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class ApiExceptionTest {
+
   @Test
   void testNotFoundFactory() {
     ApiException ex = ApiException.notFound("User", 123);
@@ -23,8 +24,9 @@ class ApiExceptionTest {
 
   @Test
   void testBadRequestFactory() {
-    ApiException ex = ApiException.badRequest("Invalid input");
+    String invalidInput = "Invalid input";
+    ApiException ex = ApiException.badRequest(invalidInput);
     assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
-    assertEquals("Invalid input", ex.getMessage());
+    assertEquals(invalidInput, ex.getMessage());
   }
 }

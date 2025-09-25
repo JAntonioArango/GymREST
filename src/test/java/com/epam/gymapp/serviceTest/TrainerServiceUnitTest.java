@@ -29,7 +29,6 @@ class TrainerServiceUnitTest {
   @Mock private TrainingTypeRepo typeRepo;
   @Mock private CredentialGenerator creds;
   @Mock private TraineeRepo traineeRepo;
-  @Mock private UserRepository userRepository;
 
   @InjectMocks private TrainerService service;
 
@@ -60,7 +59,7 @@ class TrainerServiceUnitTest {
     when(trainerRepo.save(any(Trainer.class))).thenReturn(savedTrainer);
 
     TrainerDto dto = service.createProfile(createDto);
-    assertFalse(savedUser.getUsername().equals(dto.username()));
+    assertNotEquals(savedUser.getUsername(), dto.username());
     assertEquals(mockType.getName(), dto.specialization());
   }
 
@@ -68,7 +67,7 @@ class TrainerServiceUnitTest {
   void findByUsername_shouldReturnDtoOrThrow() {
     when(trainerRepo.findByUserUsername("u")).thenReturn(Optional.of(savedTrainer));
     TrainerDto dto = service.findByUsername("u");
-    assertFalse("u".equals(dto.username()));
+    assertNotEquals("u", dto.username());
 
     when(trainerRepo.findByUserUsername("x")).thenReturn(Optional.empty());
     assertThrows(ApiException.class, () -> service.findByUsername("x"));
@@ -110,26 +109,27 @@ class TrainerServiceUnitTest {
 
   @Test
   void list_shouldReturnPagedDtos() {
-    TrainingType t = mockType;
     savedTrainer.setId(5L);
     when(trainerRepo.findAll(PageRequest.of(0, 2)))
         .thenReturn(new PageImpl<>(List.of(savedTrainer)));
 
     var page = service.list(PageRequest.of(0, 2));
     assertEquals(1, page.getTotalElements());
-    assertEquals(5L, page.getContent().get(0).id());
+    assertEquals(5L, page.getContent().getFirst().id());
   }
 
   @Test
   void findProfile_shouldMapToProfileDto() {
     when(trainerRepo.findByUserUsername("u")).thenReturn(Optional.of(savedTrainer));
     TrainerProfileDto pd = service.findProfile("u");
-    assertFalse("u".equals(pd.username()));
+    assertNotEquals("u", pd.username());
     assertThat(pd.trainees()).isEmpty();
   }
 
   @Test
   void unassignedActiveTrainers_shouldFilterAndReturnShortDtos() {
+    when(traineeRepo.findByUserUsername("trainee")).thenReturn(Optional.of(new Trainee()));
+
     Trainer assigned = new Trainer();
     assigned.setId(1L);
     User assignedUser = new User();
@@ -151,6 +151,6 @@ class TrainerServiceUnitTest {
 
     List<TrainerShortDto> out = service.unassignedActiveTrainers("trainee");
     assertEquals(1, out.size());
-    assertEquals("free", out.get(0).username());
+    assertEquals("free", out.getFirst().username());
   }
 }
