@@ -1,18 +1,26 @@
 package com.epam.gymapp.microservice;
 
+import com.epam.gymapp.activemq.ProducerController;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/micro/v1")
 @RequiredArgsConstructor
+@Slf4j
 public class WorkloadProxyController {
+
   private final WorkloadGateway gateway;
+  private final ProducerController producerController;
 
   @PostMapping("/saveworkload")
-  public ResponseEntity<TrainerWorkload> save(@RequestBody TrainerWorkload workLoad) {
-    return ResponseEntity.ok(gateway.save(workLoad));
+  public ResponseEntity<String> save(@RequestBody TrainerWorkload workLoad) {
+    String queue = "Asynchronous.Task";
+    producerController.send(queue, workLoad.toString());
+    log.info("Workload queued for processing: {}", workLoad.username());
+    return ResponseEntity.accepted().body("Workload queued for processing");
   }
 
   @GetMapping("/summary/{username}")

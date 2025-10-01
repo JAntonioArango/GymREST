@@ -1,4 +1,18 @@
 services:
+
+  artemis:
+    image: apache/activemq-artemis:latest
+    container_name: gymtaskrest-artemis
+    environment:
+      ARTEMIS_USER: artemis
+      ARTEMIS_PASSWORD: artemis
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    networks:
+      - gym-network
+
+
   eureka-server:
     build: ./eureka-server
     container_name: eureka-server
@@ -40,7 +54,10 @@ services:
 
   app:
     build: .
+    container_name: gymtaskrest-app
     depends_on:
+      artemis:
+        condition: service_started
       db:
         condition: service_healthy
       eureka-server:
@@ -64,6 +81,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_ARTEMIS_BROKER_URL: tcp://artemis:61616
+      SPRING_ARTEMIS_USER: artemis
+      SPRING_ARTEMIS_PASSWORD: artemis
+
+
 
 
   sonarqube:

@@ -69,7 +69,7 @@ public class SecurityConfig {
   @Bean
   @Transactional
   public SecurityFilterChain filterChain(HttpSecurity http, JwtDecoder jwtDecoder)
-          throws Exception {
+      throws Exception {
 
     // Add custom filter
     http.addFilterBefore(revocationFilter, BearerTokenAuthenticationFilter.class);
@@ -85,21 +85,20 @@ public class SecurityConfig {
 
   private void configureSecurityDefaults(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .httpBasic(AbstractHttpConfigurer::disable);
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .httpBasic(AbstractHttpConfigurer::disable);
   }
 
   private void configureAuthentication(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
-    http.authorizeHttpRequests(auth ->
-                    auth.requestMatchers(PUBLIC_ENDPOINTS)
-                            .permitAll()
-                            .anyRequest()
-                            .authenticated())
-            .oauth2ResourceServer(oauth2 ->
-                    oauth2.jwt(jwt ->
-                            jwt.decoder(jwtDecoder)
-                                    .jwtAuthenticationConverter(new UsernameSubConverter())));
+    http.authorizeHttpRequests(
+            auth -> auth.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated())
+        .oauth2ResourceServer(
+            oauth2 ->
+                oauth2.jwt(
+                    jwt ->
+                        jwt.decoder(jwtDecoder)
+                            .jwtAuthenticationConverter(new UsernameSubConverter())));
   }
 
   @Bean

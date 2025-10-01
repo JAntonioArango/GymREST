@@ -14,10 +14,16 @@ spring:
             readTimeout: 3000
 
 
+  artemis:
+    mode: native
+    broker-url: ${SPRING_ARTEMIS_BROKER_URL:tcp://artemis:61616}
+    user: ${SPRING_ARTEMIS_USER}
+    password: ${SPRING_ARTEMIS_PASSWORD}
+
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://db:3306/gymdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-    username: ${SPRING_DATASOURCE_USERNAME:gymuser}
-    password: ${SPRING_DATASOURCE_PASSWORD:YourStrongPwd}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     hikari:

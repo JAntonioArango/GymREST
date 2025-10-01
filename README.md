@@ -10,6 +10,7 @@ This system follows a microservices architecture pattern with:
 - **API Gateway** for routing and load balancing
 - **Distributed Configuration** management
 - **Circuit Breaker** patterns for resilience
+- **Asynchronous Messaging** for event-driven communication
 - **Centralized Monitoring** and observability
 
 ---
@@ -30,6 +31,7 @@ This system follows a microservices architecture pattern with:
 | **Testing & Coverage**            | JUnit 5, Mockito; JaCoCo gate ≥ 80 % (uploaded to SonarQube)                                            |
 | **Code Quality**                  | SonarQube static analysis; Spotless plugin with Google Java Format                                      |
 | **Logging**                       | Console logs, transaction-ID filter, detailed REST call logging                                         |
+| **Asynchronous Messaging**       | Event-driven communication between services with message queues, event publishing & dead letter queue for invalid messages |
 | **Microservices**                | Service Discovery (Eureka) · API Gateway · Config Server · Circuit Breakers                             |
 | **Deployment**                    | Docker Compose stack: App, MySQL, Prometheus, Grafana, SonarQube – credentials via `.env`               |
 
@@ -37,18 +39,19 @@ This system follows a microservices architecture pattern with:
 
 ## ⚙ Tech Stack ⚙
 
-| Layer             | Technology                                                                |
-| ----------------- | ------------------------------------------------------------------------- |
-| **Runtime**          | Java 21, Spring Boot 3.4.x                                                |
+| Layer             | Technology                                                               |
+| ----------------- | ------------------------------------------------------------------------ |
+| **Runtime**          | Java 21, Spring Boot 3.4.x                                               |
 | **Microservices**    | Spring Cloud 2024.x** · Eureka** · Gateway · Config Server · Circuit Breaker |
+| **Messaging**        | Spring AMQP · Event-driven architecture · Dead Letter Queue                            |
 | **Security**         | Spring Security 6 · OAuth2 Resource-Server (JWT) · BCrypt · Caffeine cache |
-| **Persistence**       | Spring Data JPA / Hibernate 6 · MySQL 8**                                 |
-| **Monitoring**        | Spring Boot Actuator · Micrometer** · Prometheus v2** · Grafana 11       |
-| **Build**             | Maven 3.9.x** (wrapper) · Dockerfile / Docker Compose                     |
-| **Testing**           | JUnit 5 · Mockito · Spring Boot Test · JaCoCo                             |
-| **Documentation**     | Swagger / OpenAPI 3.1 (springdoc-openapi)                                 |
-| **Utilities**         | Lombok · Jackson · Apache Commons Lang                                    |
-| **Quality & Linting** | SonarQube 10 · Spotless (google-java-format)                              |
+| **Persistence**       | Spring Data JPA / Hibernate 6 · MySQL 8**                                |
+| **Monitoring**        | Spring Boot Actuator · Micrometer** · Prometheus v2** · Grafana 11      |
+| **Build**             | Maven 3.9.x** (wrapper) · Dockerfile / Docker Compose                    |
+| **Testing**           | JUnit 5 · Mockito · Spring Boot Test · JaCoCo                            |
+| **Documentation**     | Swagger / OpenAPI 3.1 (springdoc-openapi)                                |
+| **Utilities**         | Lombok · Jackson · Apache Commons Lang                                   |
+| **Quality & Linting** | SonarQube 10 · Spotless (google-java-format)                             |
 
 ---
 
@@ -57,6 +60,8 @@ This system follows a microservices architecture pattern with:
 Your App: http://localhost:8080 <br>
 
 Eureka Dashboard: http://localhost:8762 <br>
+
+Artemis ActiveMQ: http://localhost:8161/console/artemis <br>
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html <br>
 
